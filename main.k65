@@ -1,8 +1,76 @@
+var PFIndex = 0x80, PFCount, YPos0, XPos0, YPos1, XPos1, YP0, YP1, Bitp0, Bitp1, Colp0, Colp1
+var PFPtr[2] = 0x90, SpritePtr0[2], ColorPtr0[2], SpritePtr1[2], ColorPtr1[2]
+var xspeed = 0xA0, yspeed, xacc, yacc, state
+var Temp=0xB0, tmpPF0, tmpPF1, tmpPF2, tmpPF3, tmpPF4, tmpPF5, Temp2
+
+func DrawSprites {
+	a=SPRITE_HEIGHT c+ a - ++YP0 < { a=0 }
+	y=a
+	Colp0=a=(ColorPtr0),y
+	gp0=a=(SpritePtr0),y 
+	a=SPRITE_HEIGHT c+ a - ++YP1 < { a=0 }	
+	y=a
+	a=(ColorPtr1),y	x=a
+	a=(SpritePtr1),y y=a
+	a=Colp0
+	wsync
+	gp1=y cp1=x cp0=a
+}
+
+inline DrawPlayfield {
+	PF0=a=tmpPF0
+	PF1=a=tmpPF1
+	PF2=a=tmpPF2
+	PF0=a=tmpPF3
+	PF1=a=tmpPF4
+	PF2=a=tmpPF5
+}
+
 main {
 	init
+	Data0:
+		PFPtr=a=&<Data0 			PFPtr+1=a=&>Data0
+		SpritePtr0=a=&<Frame0 		SpritePtr0+1=a=&>Frame0
+		ColorPtr0=a=&<ColorFrame0	ColorPtr0+1=a=&>ColorFrame0
+		SpritePtr1=a=&<Frame0		SpritePtr1+1=a=&>Frame0
+		ColorPtr1=a=&<ColorFrame0	ColorPtr1+1=a=&>ColorFrame0
+		YPos0=a=242	YPos1=a=200	XPos0=XPos1=a=38
+		vdp0=a=1
 	{
-		sync1			
+		sync1
+			cbg=a=0x88	cpf=a=0x5b cp0=a=0x68
+			PFIndex=a=23 YP0=a=YPos0 YP1=a=YPos1 
+			a=XPos0 x=0 SetHorizPos
+			a=XPos1 x=1 SetHorizPos			
+			wsync hmove=a
 		sync2
+			MoveJoystick
+			UpdateHorizontal
 		sync3
-	} always	// loop forever
+			{
+				// Phase 0: Fetch PF0 byte
+				DrawSprites
+				y=PFIndex == { goto .NextFrame }
+				y-- PFIndex=y
+				tmpPF0=a=pf0_0,y
+				tmpPF1=a=pf1_0,y
+				tmpPF2=a=pf2_0,y
+				tmpPF3=a=pf0_1,y
+				tmpPF4=a=pf1_1,y
+				tmpPF5=a=pf2_1,y
+
+				// Phase 1: Fetch PF1 byte
+				DrawSprites
+				DrawPlayfield
+
+				// Phase 2: Fetch PF2 byte
+				DrawSprites
+				DrawPlayfield
+
+				// Phase 3: Write PF0/PF1/PF2 registers
+				DrawSprites
+				DrawPlayfield
+			} always
+		.NextFrame:
+	} always
 }

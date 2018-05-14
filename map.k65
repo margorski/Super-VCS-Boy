@@ -1,0 +1,25 @@
+data pf0_0 {
+	align 256
+	image test2 3 23 4< 24^	
+}
+data pf1_0 {
+	align 256
+	image test2 4 23 8> 24^	
+}
+data pf2_0 {
+	align 256
+	image test2 19 23 8< 24^	
+}
+
+data pf0_1 {
+	align 256
+	image test2 23 23 4< 24^	
+}
+data pf1_1 {
+	align 256
+	image test2 24 23 8> 24^	
+}
+data pf2_1 {
+	align 256
+	image test2 39 23 8< 24^	
+}

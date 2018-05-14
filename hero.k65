@@ -1,0 +1,77 @@
+[SPRITE_HEIGHT = 8, XACC=0x08, TORQUE=0x07, MAX_SPEED=0x64, MIN_SPEED=0x9C, MAX_X=120]
+
+data Frame0 {
+	0x00
+	0b01100110
+	0b11111111
+	0b11110011
+	0b11100001
+	0b11111111
+	0b10001100
+	0b11001101
+	0b11111111
+}
+
+data ColorFrame0 {
+	0xC4
+	0xC4
+	0xC2
+	0xC2
+	0xC2
+	0xC2
+	0xC2
+	0xC2
+	0xC2
+}
+
+data hero {
+	image hero 0 0 8> 9v	
+    image hero 8 0 8> 9v
+    image hero 16 0 8> 9v
+    image hero 24 0 8> 9v
+}
+
+func MoveJoystick {
+	// down
+	//a=0b00100000 a&?swcha == { x-- }	
+	// up
+	//a=0b00010000 a&?swcha == { x?254 <{ x++ }}	
+	// leftv
+
+	x=xspeed 
+	//left 
+	a=0b01000000 a&?swcha == { 
+		a=x c+ o- a-XACC <<= {a=0x81}
+	}	
+	else { 
+		a=0b10000000 a&?swcha == { 
+			a=x c- o- a+XACC <<= { a=0x7F }
+		}
+		else {
+			a=x == { return }
+			<0 {
+				c- o- a+TORQUE <<= {a=0}
+			}
+			else {
+				c+ o- a-TORQUE <<= {a=0}
+			}
+		}
+	} 
+	xspeed=a
+}
+
+func UpdateHorizontal {
+	a=xspeed
+	== { 
+		return
+	}
+	a&0x80 <0 {
+		a=xspeed ComputeU2 a>> a>> a>> a>> a>> Temp2=a a=XPos0 
+		c+ a-Temp2 <{a=0}
+	}
+	else {
+		a=xspeed a>> a>> a>> a>> a>>
+		c- a+XPos0 a?MAX_X >={ a=MAX_X }
+	}
+	XPos0=a
+}
