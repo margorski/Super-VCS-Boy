@@ -1,4 +1,5 @@
-[SPRITE_HEIGHT = 8, XACC=0x08, TORQUE=0x07, MAX_SPEED=0x64, MIN_SPEED=0x9C, MAX_X=120]
+[SPRITE_HEIGHT = 8, XACC=0x06, TORQUE=0x07, XACC_AIR=0x02, MAX_X=120, MAX_Y=200, GRAVITY=0x06, MIN_Y_SPEED=0x9C, JUMP_SPEED=0x60]
+[MIN_Y=0xAB]
 
 data Frame0 {
 	0x00
@@ -31,6 +32,156 @@ data hero {
     image hero 24 0 8> 9v
 }
 
+data PF0BitLookupTable {
+	0x10 
+	0x20
+	0x40
+	0x80
+}
+
+data PF1BitLookupTable {
+	0b10000000
+	0b01000000
+	0b00100000
+	0b00010000
+	0b00001000
+	0b00000100
+	0b00000010
+	0b00000001
+}
+
+data PF2BitLookupTable {
+	0b00000001
+	0b00000010
+	0b00000100
+	0b00001000
+	0b00010000
+	0b00100000
+	0b01000000
+	0b10000000
+}
+
+// X - posX >> >>
+// Y - (0xFF - posY + 3) >> >>
+func CalculatePFPosition {
+	a=x a>> a>> x=a 
+	a=y c+ a-0xA2 a>> a>> y=a 
+}
+
+// x - pf_poxX, y - pf_posY
+func CheckCollision {
+	a=x
+	a?4 < { a=pf0_0,y a&PF0BitLookupTable,x}
+	else {
+		a?12 <{ a=x c+ a-4 x=a a=pf1_0,y a&PF1BitLookupTable,x}
+		else {
+			a?20 <{ a=x c+ a-12 x=a a=pf2_0,y a&PF2BitLookupTable,x }
+			else { 
+				a?24 <{ a=x c+ a-20 x=a a=pf0_1,y a&PF0BitLookupTable,x }
+				else {
+					a?32 <{ a=x c+ a-24 x=a a=pf1_1,y a&PF1BitLookupTable,x }
+					else { a=x c+ a-32 x=a a=pf2_1,y a&PF2BitLookupTable,x }
+				}
+			}
+		}
+	}
+}
+
+inline CheckCollisionLeft {
+	x=XPos0 y=YPos0 CalculatePFPosition
+
+.checkLeftCollisionLoop:
+	CheckCollision
+	== {
+		x=XPos0 a=YPos0 c- a+4 y=a CalculatePFPosition
+		CheckCollision
+		== {
+			x=XPos0 a=YPos0 c- a+8 y=a CalculatePFPosition
+			CheckCollision
+		}
+	}
+	!= { 
+		xspeed=a=0 
+		x=XPos0 x++ XPos0=x y=YPos0
+		CalculatePFPosition
+		goto .checkLeftCollisionLoop
+	}	
+}
+
+// a- XPos0
+inline CheckCollisionRight {
+	a=XPos0 c- a+8 Temp2=a
+	x=Temp2 y=YPos0 CalculatePFPosition
+	
+.checkRightCollisionLoop:
+	CheckCollision
+	== {
+		x=Temp2 a=YPos0 c- a+4 y=a CalculatePFPosition
+		CheckCollision
+		== {
+			x=Temp2 a=YPos0 c- a+8 y=a CalculatePFPosition
+			CheckCollision
+		}
+	}	
+
+	!= { 
+		xspeed=a=0 
+		a=XPos0 c+ a-1 XPos0=a
+		c- a+8 Temp2=a
+		x=Temp2 y=YPos0
+		CalculatePFPosition
+		goto .checkRightCollisionLoop
+	}
+}
+
+inline CheckCollisionTop {
+	x=XPos0 y=YPos0 CalculatePFPosition
+	
+.checkTopCollisionLoop:
+	CheckCollision
+	== {
+		a=XPos0 c- a+4 x=a y=YPos0 CalculatePFPosition
+		CheckCollision
+		== {
+			a=XPos0 c- a+8 x=a y=YPos0 CalculatePFPosition
+			CheckCollision
+		}
+	}
+	
+	!= { 
+		yspeed=a=0 state=a
+		x=XPos0 y=YPos0 y-- YPos0=y CalculatePFPosition
+		CalculatePFPosition
+		goto .checkTopCollisionLoop
+	}
+}
+
+// a - YPos0
+inline CheckCollisionBottom {
+	a=YPos0 c+ a-8 Temp2=a
+	x=XPos0 y=Temp2 CalculatePFPosition
+
+.checkBottomCollisionLoop:
+	CheckCollision
+	== {
+		a=XPos0 c- a+4 x=a y=Temp2 CalculatePFPosition
+		CheckCollision
+		== {
+			a=XPos0 c- a+8 x=a y=Temp2 CalculatePFPosition
+			CheckCollision
+		}
+	}
+
+	!= { 
+		yspeed=a=0 state=a
+		a=YPos0 c- a+1 YPos0=a
+		c+ a-8 Temp2=a
+		x=XPos0 y=Temp2 
+		CalculatePFPosition
+		goto .checkBottomCollisionLoop
+	}
+}
+
 func MoveJoystick {
 	// down
 	//a=0b00100000 a&?swcha == { x-- }	
@@ -38,14 +189,16 @@ func MoveJoystick {
 	//a=0b00010000 a&?swcha == { x?254 <{ x++ }}	
 	// leftv
 
-	x=xspeed 
+	x=xspeed
+	a=state <0 { Temp2=a=XACC_AIR }
+	else { Temp2=a=XACC }
 	//left 
-	a=0b01000000 a&?swcha == { 
-		a=x c+ o- a-XACC <<= {a=0x81}
+	a=0b01000000 a&?swcha == {
+		a=x c+ o- a-Temp2 <<= {a=0x81}
 	}	
 	else { 
 		a=0b10000000 a&?swcha == { 
-			a=x c- o- a+XACC <<= { a=0x7F }
+			a=x c- o- a+Temp2 <<= { a=0x7F }
 		}
 		else {
 			a=x == { return }
@@ -58,6 +211,10 @@ func MoveJoystick {
 		}
 	} 
 	xspeed=a
+
+	a&?inpt4 >=0 { 
+		a=state >=0 { a|0x80 state=a yspeed=a=JUMP_SPEED } 
+	}
 }
 
 func UpdateHorizontal {
@@ -66,12 +223,38 @@ func UpdateHorizontal {
 		return
 	}
 	a&0x80 <0 {
-		a=xspeed ComputeU2 a>> a>> a>> a>> a>> Temp2=a a=XPos0 
-		c+ a-Temp2 <{a=0}
+		a=xspeed ComputeU2 a>> a>> a>> a>> a>>
+		Temp2=a a=XPos0
+		c+ a-Temp2 XPos0=a 
+		CheckCollisionLeft
 	}
 	else {
 		a=xspeed a>> a>> a>> a>> a>>
-		c- a+XPos0 a?MAX_X >={ a=MAX_X }
+		c- a+XPos0 XPos0=a 
+		CheckCollisionRight
 	}
-	XPos0=a
+}
+
+inline ApplyGravity {
+	a=yspeed
+	c+ a-GRAVITY 
+	<0 { 
+		a?MIN_Y_SPEED <0 { a=MIN_Y_SPEED } 
+	}
+	yspeed=a
+}
+
+func UpdateVertical {
+	a=yspeed
+	a&0x80 <0 {
+		a=yspeed ComputeU2 a>> a>> a>> a>> a>>
+		Temp2=a a=YPos0 
+		c+ a-Temp2 YPos0=a 
+		CheckCollisionBottom
+	}
+	else {
+		a=yspeed a>> a>> a>> a>> a>>
+		c- a+YPos0 YPos0=a 
+		CheckCollisionTop
+	}
 }

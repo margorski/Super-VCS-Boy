@@ -1,7 +1,7 @@
 var PFIndex = 0x80, PFCount, YPos0, XPos0, YPos1, XPos1, YP0, YP1, Bitp0, Bitp1, Colp0, Colp1
 var PFPtr[2] = 0x90, SpritePtr0[2], ColorPtr0[2], SpritePtr1[2], ColorPtr1[2]
 var xspeed = 0xA0, yspeed, xacc, yacc, state
-var Temp=0xB0, tmpPF0, tmpPF1, tmpPF2, tmpPF3, tmpPF4, tmpPF5, Temp2
+var Temp=0xB0, tmpPF0, tmpPF1, tmpPF2, tmpPF3, tmpPF4, tmpPF5, Temp2, Temp3
 
 func DrawSprites {
 	a=SPRITE_HEIGHT c+ a - ++YP0 < { a=0 }
@@ -45,7 +45,9 @@ main {
 			wsync hmove=a
 		sync2
 			MoveJoystick
+			ApplyGravity
 			UpdateHorizontal
+			UpdateVertical
 		sync3
 			{
 				// Phase 0: Fetch PF0 byte

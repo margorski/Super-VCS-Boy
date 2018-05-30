@@ -66,6 +66,153 @@ ColorFrame0
 ;  }
     .byte     #$C2
 ;  
+; section PF0BitLookupTable
+PF0BitLookupTable
+    .byte     #$10
+;  	0x10 
+;  	0x20
+;  	0x40
+    .byte     #$20
+;  	0x80
+    .byte     #$40
+;  }
+    .byte     #$80
+;  
+; section PF1BitLookupTable
+PF1BitLookupTable
+    .byte     #$80
+;  	0b10000000
+;  	0b01000000
+;  	0b00100000
+    .byte     #$40
+;  	0b00010000
+    .byte     #$20
+;  	0b00001000
+    .byte     #$10
+;  	0b00000100
+    .byte     #$08
+;  	0b00000010
+    .byte     #$04
+;  	0b00000001
+    .byte     #$02
+;  }
+    .byte     #$01
+;  
+; section PF2BitLookupTable
+PF2BitLookupTable
+    .byte     #$01
+;  	0b00000001
+;  	0b00000010
+;  	0b00000100
+    .byte     #$02
+;  	0b00001000
+    .byte     #$04
+;  	0b00010000
+    .byte     #$08
+;  	0b00100000
+    .byte     #$10
+;  	0b01000000
+    .byte     #$20
+;  	0b10000000
+    .byte     #$40
+;  }
+    .byte     #$80
+;  
+; section CalculatePFPosition
+CalculatePFPosition
+    TXA
+;  	a=x a>> a>> x=a 
+    LSR
+    LSR
+    TAX
+;  	a=y c+ a-0xA2 a>> a>> y=a 
+    TYA
+    SEc
+    SBC     #$A2
+    LSR
+    LSR
+    TAY
+;  }
+;  
+    RTS
+; section CheckCollision
+CheckCollision
+    TXA
+;  	a=x
+;  	a?4 < { a=pf0_0,y a&PF0BitLookupTable,x}
+    CMP     #$04
+    BCS     __label_4
+    LDA     pf0_0,Y
+    AND     PF0BitLookupTable,X
+;  	else {
+    JMP     __label_5
+__label_4
+;  		a?12 <{ a=x c+ a-4 x=a a=pf1_0,y a&PF1BitLookupTable,x}
+    CMP     #$0C
+    BCS     __label_6
+    TXA
+    SEc
+    SBC     #$04
+    TAX
+    LDA     pf1_0,Y
+    AND     PF1BitLookupTable,X
+;  		else {
+    JMP     __label_7
+__label_6
+;  			a?20 <{ a=x c+ a-12 x=a a=pf2_0,y a&PF2BitLookupTable,x }
+    CMP     #$14
+    BCS     __label_8
+    TXA
+    SEc
+    SBC     #$0C
+    TAX
+    LDA     pf2_0,Y
+    AND     PF2BitLookupTable,X
+;  			else { 
+    JMP     __label_9
+__label_8
+    CMP     #$18
+;  				a?24 <{ a=x c+ a-20 x=a a=pf0_1,y a&PF0BitLookupTable,x }
+    BCS     __label_10
+    TXA
+    SEc
+    SBC     #$14
+    TAX
+    LDA     pf0_1,Y
+    AND     PF0BitLookupTable,X
+;  				else {
+    JMP     __label_11
+__label_10
+;  					a?32 <{ a=x c+ a-24 x=a a=pf1_1,y a&PF1BitLookupTable,x }
+    CMP     #$20
+    BCS     __label_12
+    TXA
+    SEc
+    SBC     #$18
+    TAX
+    LDA     pf1_1,Y
+    AND     PF1BitLookupTable,X
+;  					else { a=x c+ a-32 x=a a=pf2_1,y a&PF2BitLookupTable,x }
+    JMP     __label_13
+__label_12
+    TXA
+    SEc
+    SBC     #$20
+    TAX
+    LDA     pf2_1,Y
+    AND     PF2BitLookupTable,X
+;  				}
+__label_13
+;  			}
+__label_11
+;  		}
+__label_9
+;  	}
+__label_7
+;  }
+__label_5
+;  
+    RTS
 ; section MoveJoystick
 MoveJoystick
     LDX     xspeed
@@ -75,74 +222,99 @@ MoveJoystick
 ;  	//a=0b00010000 a&?swcha == { x?254 <{ x++ }}	
 ;  	// leftv
 ;  
-;  	x=xspeed 
+;  	x=xspeed
+;  	a=state <0 { Temp2=a=XACC_AIR }
+    LDA     state
+    BPL     __label_26
+    LDA     #$02
+    STA     Temp2
+;  	else { Temp2=a=XACC }
+    JMP     __label_27
+__label_26
+    LDA     #$06
+    STA     Temp2
 ;  	//left 
-;  	a=0b01000000 a&?swcha == { 
+__label_27
+;  	a=0b01000000 a&?swcha == {
     LDA     #$40
     BIT     swcha
-    BNE     __label_4
-;  		a=x c+ o- a-XACC <<= {a=0x81}
+    BNE     __label_28
+;  		a=x c+ o- a-Temp2 <<= {a=0x81}
     TXA
     SEc
     CLv
-    SBC     #$08
-    BVC     __label_5
+    SBC     Temp2
+    BVC     __label_29
     LDA     #$81
 ;  	}	
-__label_5
-    JMP     __label_6
-__label_4
+__label_29
+    JMP     __label_30
+__label_28
 ;  	else { 
     LDA     #$80
 ;  		a=0b10000000 a&?swcha == { 
     BIT     swcha
-    BNE     __label_7
-;  			a=x c- o- a+XACC <<= { a=0x7F }
+    BNE     __label_31
+;  			a=x c- o- a+Temp2 <<= { a=0x7F }
     TXA
     CLc
     CLv
-    ADC     #$08
-    BVC     __label_8
+    ADC     Temp2
+    BVC     __label_32
     LDA     #$7F
 ;  		}
-__label_8
+__label_32
 ;  		else {
-    JMP     __label_9
-__label_7
+    JMP     __label_33
+__label_31
 ;  			a=x == { return }
     TXA
-    BNE     __label_10
+    BNE     __label_34
     RTS
 ;  			<0 {
-__label_10
-    BPL     __label_11
+__label_34
+    BPL     __label_35
 ;  				c- o- a+TORQUE <<= {a=0}
     CLc
     CLv
     ADC     #$07
-    BVC     __label_12
+    BVC     __label_36
     LDA     #$00
 ;  			}
-__label_12
+__label_36
 ;  			else {
-    JMP     __label_13
-__label_11
+    JMP     __label_37
+__label_35
 ;  				c+ o- a-TORQUE <<= {a=0}
     SEc
     CLv
     SBC     #$07
-    BVC     __label_14
+    BVC     __label_38
     LDA     #$00
 ;  			}
-__label_14
+__label_38
 ;  		}
-__label_13
+__label_37
 ;  	} 
-__label_9
-__label_6
+__label_33
+__label_30
 ;  	xspeed=a
     STA     xspeed
+;  
+;  	a&?inpt4 >=0 { 
+    BIT     inpt4
+    BMI     __label_39
+;  		a=state >=0 { a|0x80 state=a yspeed=a=JUMP_SPEED } 
+    LDA     state
+    BMI     __label_40
+    ORA     #$80
+    STA     state
+    LDA     #$60
+    STA     yspeed
+__label_40
+;  	}
 ;  }
+__label_39
 ;  
     RTS
 ; section UpdateHorizontal
@@ -150,15 +322,15 @@ UpdateHorizontal
     LDA     xspeed
 ;  	a=xspeed
 ;  	== { 
-    BNE     __label_15
+    BNE     __label_41
 ;  		return
 ;  	}
     RTS
 ;  	a&0x80 <0 {
-__label_15
+__label_41
     AND     #$80
-    BPL     __label_16
-;  		a=xspeed ComputeU2 a>> a>> a>> a>> a>> Temp2=a a=XPos0 
+    BPL     __label_42
+;  		a=xspeed ComputeU2 a>> a>> a>> a>> a>>
     LDA     xspeed
 	; inlined ComputeU2
     EOR     #$FF
@@ -170,18 +342,53 @@ __label_15
     LSR
     LSR
     LSR
+;  		Temp2=a a=XPos0
     STA     Temp2
     LDA     XPos0
-;  		c+ a-Temp2 <{a=0}
+;  		c+ a-Temp2 XPos0=a 
     SEc
     SBC     Temp2
-    BCS     __label_17
-    LDA     #$00
+    STA     XPos0
+;  		CheckCollisionLeft
 ;  	}
-__label_17
+	; inlined CheckCollisionLeft
+    LDX     XPos0
+    LDY     YPos0
+    JSR     CalculatePFPosition
+__I12__local16_checkLeftCollisionLoop
+    JSR     CheckCollision
+	BNE	__I12__label_14
+    LDX     XPos0
+    LDA     YPos0
+    CLc
+    ADC     #$04
+    TAY
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+	BNE	__I12__label_15
+    LDX     XPos0
+    LDA     YPos0
+    CLc
+    ADC     #$08
+    TAY
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+__I12__label_15
+__I12__label_14
+	BEQ	__I12__label_16
+    LDA     #$00
+    STA     xspeed
+    LDX     XPos0
+    INX
+    STX     XPos0
+    LDY     YPos0
+    JSR     CalculatePFPosition
+	JMP	__I12__local16_checkLeftCollisionLoop
+__I12__label_16
+	; end of inlined CheckCollisionLeft
 ;  	else {
-    JMP     __label_18
-__label_16
+    JMP     __label_43
+__label_42
 ;  		a=xspeed a>> a>> a>> a>> a>>
     LDA     xspeed
     LSR
@@ -189,198 +396,368 @@ __label_16
     LSR
     LSR
     LSR
-;  		c- a+XPos0 a?MAX_X >={ a=MAX_X }
+;  		c- a+XPos0 XPos0=a 
     CLc
     ADC     XPos0
-    CMP     #$78
-    BCC     __label_19
-    LDA     #$78
-;  	}
-__label_19
-;  	XPos0=a
-__label_18
     STA     XPos0
+;  		CheckCollisionRight
+;  	}
+	; inlined CheckCollisionRight
+    LDA     XPos0
+    CLc
+    ADC     #$08
+    STA     Temp2
+    LDX     Temp2
+    LDY     YPos0
+    JSR     CalculatePFPosition
+__I13__local17_checkRightCollisionLoop
+    JSR     CheckCollision
+	BNE	__I13__label_17
+    LDX     Temp2
+    LDA     YPos0
+    CLc
+    ADC     #$04
+    TAY
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+	BNE	__I13__label_18
+    LDX     Temp2
+    LDA     YPos0
+    CLc
+    ADC     #$08
+    TAY
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+__I13__label_18
+__I13__label_17
+	BEQ	__I13__label_19
+    LDA     #$00
+    STA     xspeed
+    LDA     XPos0
+    SEc
+    SBC     #$01
+    STA     XPos0
+    CLc
+    ADC     #$08
+    STA     Temp2
+    LDX     Temp2
+    LDY     YPos0
+    JSR     CalculatePFPosition
+	JMP	__I13__local17_checkRightCollisionLoop
+__I13__label_19
+	; end of inlined CheckCollisionRight
 ;  }
+__label_43
+;  
+    RTS
+; section UpdateVertical
+UpdateVertical
+    LDA     yspeed
+;  	a=yspeed
+;  	a&0x80 <0 {
+    AND     #$80
+    BPL     __label_46
+;  		a=yspeed ComputeU2 a>> a>> a>> a>> a>>
+    LDA     yspeed
+	; inlined ComputeU2
+    EOR     #$FF
+    CLc
+    ADC     #$01
+	; end of inlined ComputeU2
+    LSR
+    LSR
+    LSR
+    LSR
+    LSR
+;  		Temp2=a a=YPos0 
+    STA     Temp2
+    LDA     YPos0
+;  		c+ a-Temp2 YPos0=a 
+    SEc
+    SBC     Temp2
+    STA     YPos0
+;  		CheckCollisionBottom
+;  	}
+	; inlined CheckCollisionBottom
+    LDA     YPos0
+    SEc
+    SBC     #$08
+    STA     Temp2
+    LDX     XPos0
+    LDY     Temp2
+    JSR     CalculatePFPosition
+__I15__local19_checkBottomCollisionLoop
+    JSR     CheckCollision
+	BNE	__I15__label_23
+    LDA     XPos0
+    CLc
+    ADC     #$04
+    TAX
+    LDY     Temp2
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+	BNE	__I15__label_24
+    LDA     XPos0
+    CLc
+    ADC     #$08
+    TAX
+    LDY     Temp2
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+__I15__label_24
+__I15__label_23
+	BEQ	__I15__label_25
+    LDA     #$00
+    STA     yspeed
+    STA     state
+    LDA     YPos0
+    CLc
+    ADC     #$01
+    STA     YPos0
+    SEc
+    SBC     #$08
+    STA     Temp2
+    LDX     XPos0
+    LDY     Temp2
+    JSR     CalculatePFPosition
+	JMP	__I15__local19_checkBottomCollisionLoop
+__I15__label_25
+	; end of inlined CheckCollisionBottom
+;  	else {
+    JMP     __label_47
+__label_46
+;  		a=yspeed a>> a>> a>> a>> a>>
+    LDA     yspeed
+    LSR
+    LSR
+    LSR
+    LSR
+    LSR
+;  		c- a+YPos0 YPos0=a 
+    CLc
+    ADC     YPos0
+    STA     YPos0
+;  		CheckCollisionTop
+;  	}
+	; inlined CheckCollisionTop
+    LDX     XPos0
+    LDY     YPos0
+    JSR     CalculatePFPosition
+__I16__local18_checkTopCollisionLoop
+    JSR     CheckCollision
+	BNE	__I16__label_20
+    LDA     XPos0
+    CLc
+    ADC     #$04
+    TAX
+    LDY     YPos0
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+	BNE	__I16__label_21
+    LDA     XPos0
+    CLc
+    ADC     #$08
+    TAX
+    LDY     YPos0
+    JSR     CalculatePFPosition
+    JSR     CheckCollision
+__I16__label_21
+__I16__label_20
+	BEQ	__I16__label_22
+    LDA     #$00
+    STA     yspeed
+    STA     state
+    LDX     XPos0
+    LDY     YPos0
+    DEY
+    STY     YPos0
+    JSR     CalculatePFPosition
+    JSR     CalculatePFPosition
+	JMP	__I16__local18_checkTopCollisionLoop
+__I16__label_22
+	; end of inlined CheckCollisionTop
+;  }
+__label_47
 ;  
     RTS
 ; section pf0_0
 pf0_0
 ;  	align 256
-;  	image test2 3 23 4< 24^	
-    .byte   #$00
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$E0
-    .byte   #$00
+;  	image test1 3 23 4< 24^	
+    .byte   #$F0
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$10
+    .byte   #$F0
 ;  }
 ;  data pf1_0 {
 ; section pf1_0
 pf1_0
 ;  	align 256
-;  	image test2 4 23 8> 24^	
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$80
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
+;  	image test1 4 23 8> 24^	
     .byte   #$FF
     .byte   #$00
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
     .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$FF
 ;  }
 ;  data pf2_0 {
 ; section pf2_0
 pf2_0
 ;  	align 256
-;  	image test2 19 23 8< 24^	
-    .byte   #$00
-    .byte   #$FF
+;  	image test1 19 23 8< 24^	
     .byte   #$FF
     .byte   #$E0
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$7F
-    .byte   #$03
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$FF
-    .byte   #$FF
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
     .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$FF
 ;  }
 ;  
 ; section pf0_1
 pf0_1
 ;  	align 256
-;  	image test2 23 23 4< 24^	
+;  	image test1 23 23 4< 24^	
+    .byte   #$F0
+    .byte   #$30
+    .byte   #$30
+    .byte   #$30
+    .byte   #$30
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$80
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
     .byte   #$00
     .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$F0
-    .byte   #$00
 ;  }
 ;  data pf1_1 {
 ; section pf1_1
 pf1_1
 ;  	align 256
-;  	image test2 24 23 8> 24^	
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FE
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$FF
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$0F
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$EF
-    .byte   #$FF
-    .byte   #$FF
+;  	image test1 24 23 8> 24^	
     .byte   #$FF
     .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$1F
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$03
+    .byte   #$00
+    .byte   #$E0
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$00
+    .byte   #$FF
 ;  }
 ;  data pf2_1 {
 ; section pf2_1
 pf2_1
 ;  	align 256
-;  	image test2 39 23 8< 24^	
-    .byte   #$00
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$00
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$7F
-    .byte   #$00
+;  	image test1 39 23 8< 24^	
+    .byte   #$FF
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$83
+    .byte   #$80
+    .byte   #$80
+    .byte   #$F0
+    .byte   #$80
+    .byte   #$C0
+    .byte   #$C0
+    .byte   #$83
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$80
+    .byte   #$FF
 ;  }
 ; section DrawSprites
 DrawSprites
@@ -388,10 +765,10 @@ DrawSprites
 ;  	a=SPRITE_HEIGHT c+ a - ++YP0 < { a=0 }
     SEc
     ISC     YP0
-    BCS     __label_20
+    BCS     __label_48
     LDA     #$00
 ;  	y=a
-__label_20
+__label_48
     TAY
 ;  	Colp0=a=(ColorPtr0),y
     LDA     (ColorPtr0),Y
@@ -403,9 +780,9 @@ __label_20
     LDA     #$08
     SEc
     ISC     YP1
-    BCS     __label_21
+    BCS     __label_49
     LDA     #$00
-__label_21
+__label_49
 ;  	y=a
     TAY
 ;  	a=(ColorPtr1),y	x=a
@@ -435,10 +812,10 @@ main
     LDX     #$FF
     TXS
     LDA     #$00
-__I13__label_1
+__I18__label_1
     STA     zeropage,X
     DEX
-	BNE	__I13__label_1
+	BNE	__I18__label_1
 	; end of inlined init
 ;  	init
 ;  	Data0:
@@ -481,12 +858,12 @@ Data0
     STA     vdp0
 ;  	{
 ;  		sync1
-__label_22
+__label_50
 ;  			cbg=a=0x88	cpf=a=0x5b cp0=a=0x68
 	; inlined sync1
-__I14__I1__label_2
+__I19__I1__label_2
     LDA     INTIM
-	BNE	__I14__I1__label_2
+	BNE	__I19__I1__label_2
     STA     WSYNC
     LDA     #$02
     STA     VBLANK
@@ -522,9 +899,9 @@ __I14__I1__label_2
 ;  		sync2
 ;  			MoveJoystick
 	; inlined sync2
-__I16__I3__label_2
+__I21__I3__label_2
     LDA     INTIM
-	BNE	__I16__I3__label_2
+	BNE	__I21__I3__label_2
     STA     WSYNC
     LDA     #$02
     STA     VSYNC
@@ -536,15 +913,30 @@ __I16__I3__label_2
     LDA     #$2C
     STA     TIM64T
 	; end of inlined sync2
-;  			UpdateHorizontal
+;  			ApplyGravity
     JSR     MoveJoystick
-;  		sync3
+;  			UpdateHorizontal
+	; inlined ApplyGravity
+    LDA     yspeed
+    SEc
+    SBC     #$06
+	BPL	__I22__label_44
+    CMP     #$9C
+	BPL	__I22__label_45
+    LDA     #$9C
+__I22__label_45
+__I22__label_44
+    STA     yspeed
+	; end of inlined ApplyGravity
+;  			UpdateVertical
     JSR     UpdateHorizontal
+;  		sync3
+    JSR     UpdateVertical
 ;  			{
 	; inlined sync3
-__I17__I8__label_2
+__I23__I8__label_2
     LDA     INTIM
-	BNE	__I17__I8__label_2
+	BNE	__I23__I8__label_2
     STA     WSYNC
     LDA     #$00
     STA     VBLANK
@@ -552,15 +944,15 @@ __I17__I8__label_2
     STA     TIM64T
 	; end of inlined sync3
 ;  				// Phase 0: Fetch PF0 byte
-__label_23
+__label_51
 ;  				DrawSprites
 ;  				y=PFIndex == { goto .NextFrame }
     JSR     DrawSprites
     LDY     PFIndex
-    BNE     __label_24
-    JMP     __local21_NextFrame
+    BNE     __label_52
+    JMP     __local32_NextFrame
 ;  				y-- PFIndex=y
-__label_24
+__label_52
     DEY
     STY     PFIndex
 ;  				tmpPF0=a=pf0_0,y
@@ -639,11 +1031,11 @@ __label_24
     LDA     tmpPF5
     STA     PF2
 	; end of inlined DrawPlayfield
-    JMP     __label_23
+    JMP     __label_51
 ;  		.NextFrame:
-__local21_NextFrame
+__local32_NextFrame
 ;  	} always
-    JMP     __label_22
+    JMP     __label_50
 ;  }
 ; section __vectors
     NOP
