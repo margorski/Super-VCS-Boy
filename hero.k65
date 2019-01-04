@@ -1,35 +1,10 @@
-[SPRITE_HEIGHT = 8, XACC=0x06, TORQUE=0x07, XACC_AIR=0x02, MAX_X=120, MAX_Y=200, GRAVITY=0x06, MIN_Y_SPEED=0x9C, JUMP_SPEED=0x60]
+[SPRITE_HEIGHT = 10, XACC=0x06, TORQUE=0x07, XACC_AIR=0x02, MAX_X=120, MAX_Y=200, GRAVITY=0x06, MIN_Y_SPEED=0x9C, JUMP_SPEED=0x60]
 [MIN_Y=0xAB]
 
-data Frame0 {
-	0x00
-	0b01100110
-	0b11111111
-	0b11110011
-	0b11100001
-	0b11111111
-	0b10001100
-	0b11001101
-	0b11111111
-}
-
-data ColorFrame0 {
-	0xC4
-	0xC4
-	0xC2
-	0xC2
-	0xC2
-	0xC2
-	0xC2
-	0xC2
-	0xC2
-}
-
 data hero {
-	image hero 0 0 8> 9v	
-    image hero 8 0 8> 9v
-    image hero 16 0 8> 9v
-    image hero 24 0 8> 9v
+	0
+	0
+	image hero2 0 7 8> 8^
 }
 
 data PF0BitLookupTable {
@@ -70,6 +45,7 @@ func CalculatePFPosition {
 
 // x - pf_poxX, y - pf_posY
 func CheckCollision {
+	/*
 	a=x
 	a?4 < { a=pf0_0,y a&PF0BitLookupTable,x}
 	else {
@@ -84,7 +60,7 @@ func CheckCollision {
 				}
 			}
 		}
-	}
+	}*/
 }
 
 inline CheckCollisionLeft {
