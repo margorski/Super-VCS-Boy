@@ -1,6 +1,6 @@
 var PFIndex = 0x80, PFCount, YPos0, XPos0, YPos1, XPos1, YP0, YP1
 var PFPtr[2] = 0x90, SpritePtr0[2], SpritePtr1[2]
-var xspeed = 0xA0, yspeed, xacc, yacc, state
+var xspeed = 0xA0, yspeed, xacc, yacc, state, move
 var Temp=0xB0, tmpPF0, tmpPF1, tmpPF2, tmpPF3, tmpPF4, tmpPF5, tmpGP0, Temp2, Temp3
 
 [ PLAYER_COLOR=0x33, ENEMY_COLOR=0x88, MAP_COLOR=0x56 ]
@@ -27,7 +27,31 @@ main {
 	{
 		sync1
 			PFIndex=a=48 YP0=a=YPos0 YP1=a=YPos1 tmpGP0=a=0 
-			MoveJoystick
+			
+			// 
+			x=xspeed
+			a&?swcha
+			>>= {
+				// left 
+				a&?xspeed >=0 { x=0 }
+				x--
+			} 
+			else {
+				>=0 { 
+					// right
+					a&?xspeed <0 { x=0 }
+					x++
+				}
+				else { x=0 }
+			}
+			xspeed=x
+			a&?xspeed >=0
+			{
+				a=xspeed a>> a>> c- a+XPos0 a?152 >= { a=152 } XPos0=a
+			} else {
+				a=xspeed a^0xff c- a+1 a>> a>> Temp=a c+ a=XPos0 a-Temp <{ a=0 } XPos0=a
+			}
+			
 		sync2
 			a=XPos0 x=0 SetHorizPos
 			a=XPos1 x=1 SetHorizPos			

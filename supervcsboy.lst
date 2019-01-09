@@ -39,110 +39,6 @@ hero
     .byte   #$FF
 ;  }
 ;  
-; section MoveJoystick
-MoveJoystick
-    LDX     xspeed
-;  	// down
-;  	//a=0b00100000 a&?swcha == { x-- }	
-;  	// up
-;  	//a=0b00010000 a&?swcha == { x?254 <{ x++ }}	
-;  	// leftv
-;  
-;  	x=xspeed
-;  	a=state <0 { Temp2=a=XACC_AIR }
-    LDA     state
-    BPL     __label_16
-    LDA     #$02
-    STA     Temp2
-;  	else { Temp2=a=XACC }
-    JMP     __label_17
-__label_16
-    LDA     #$06
-    STA     Temp2
-;  	//left 
-__label_17
-;  	a=0b01000000 a&?swcha == {
-    LDA     #$40
-    BIT     swcha
-    BNE     __label_18
-;  		a=x c+ o- a-Temp2 <<= {a=0x81}
-    TXA
-    SEc
-    CLv
-    SBC     Temp2
-    BVC     __label_19
-    LDA     #$81
-;  	}	
-__label_19
-    JMP     __label_20
-__label_18
-;  	else { 
-    LDA     #$80
-;  		a=0b10000000 a&?swcha == { 
-    BIT     swcha
-    BNE     __label_21
-;  			a=x c- o- a+Temp2 <<= { a=0x7F }
-    TXA
-    CLc
-    CLv
-    ADC     Temp2
-    BVC     __label_22
-    LDA     #$7F
-;  		}
-__label_22
-;  		else {
-    JMP     __label_23
-__label_21
-;  			a=x == { return }
-    TXA
-    BNE     __label_24
-    RTS
-;  			<0 {
-__label_24
-    BPL     __label_25
-;  				c- o- a+TORQUE <<= {a=0}
-    CLc
-    CLv
-    ADC     #$07
-    BVC     __label_26
-    LDA     #$00
-;  			}
-__label_26
-;  			else {
-    JMP     __label_27
-__label_25
-;  				c+ o- a-TORQUE <<= {a=0}
-    SEc
-    CLv
-    SBC     #$07
-    BVC     __label_28
-    LDA     #$00
-;  			}
-__label_28
-;  		}
-__label_27
-;  	} 
-__label_23
-__label_20
-;  	xspeed=a
-    STA     xspeed
-;  
-;  	a&?inpt4 >=0 { 
-    BIT     inpt4
-    BMI     __label_29
-;  		a=state >=0 { a|0x80 state=a yspeed=a=JUMP_SPEED } 
-    LDA     state
-    BMI     __label_30
-    ORA     #$80
-    STA     state
-    LDA     #$60
-    STA     yspeed
-__label_30
-;  	}
-;  }
-__label_29
-;  
-    RTS
 ; section pf1_0
 pf1_0
 ;  	align 256
@@ -434,9 +330,83 @@ __I19__I1__label_2
     STA     YP1
     LDA     #$00
     STA     tmpGP0
-;  			MoveJoystick
+;  			
+;  			// 
+;  			x=xspeed
+    LDX     xspeed
+;  			a&?swcha
+    BIT     swcha
+;  			>>= {
+    BVS     __label_39
+;  				// left 
+;  				a&?xspeed >=0 { x=0 }
+    BIT     xspeed
+    BMI     __label_40
+    LDX     #$00
+;  				x--
+__label_40
+    DEX
+;  			} 
+    JMP     __label_41
+__label_39
+;  			else {
+;  				>=0 { 
+    BMI     __label_42
+;  					// right
+;  					a&?xspeed <0 { x=0 }
+    BIT     xspeed
+    BPL     __label_43
+    LDX     #$00
+;  					x++
+__label_43
+    INX
+;  				}
+;  				else { x=0 }
+    JMP     __label_44
+__label_42
+    LDX     #$00
+;  			}
+__label_44
+;  			xspeed=x
+__label_41
+    STX     xspeed
+;  			a&?xspeed >=0
+    BIT     xspeed
+;  			{
+    BMI     __label_45
+;  				a=xspeed a>> a>> c- a+XPos0 a?152 >= { a=152 } XPos0=a
+    LDA     xspeed
+    LSR
+    LSR
+    CLc
+    ADC     XPos0
+    CMP     #$98
+    BCC     __label_46
+    LDA     #$98
+__label_46
+    STA     XPos0
+;  			} else {
+    JMP     __label_47
+__label_45
+;  				a=xspeed a^0xff c- a+1 a>> a>> Temp=a c+ a=XPos0 a-Temp <{ a=0 } XPos0=a
+    LDA     xspeed
+    EOR     #$FF
+    CLc
+    ADC     #$01
+    LSR
+    LSR
+    STA     Temp
+    SEc
+    LDA     XPos0
+    SBC     Temp
+    BCS     __label_48
+    LDA     #$00
+__label_48
+    STA     XPos0
+;  			}
+;  			
+__label_47
 ;  		sync2
-    JSR     MoveJoystick
 ;  			a=XPos0 x=0 SetHorizPos
 	; inlined sync2
 __I20__I3__label_2
@@ -479,15 +449,15 @@ __I22__I8__label_2
 	; end of inlined sync3
 ;  			{
 ;  				wsync
-__label_39
+__label_49
 ;  				y=PFIndex == { goto .NextFrame } y--
 	; inlined wsync
     STA     WSYNC
 	; end of inlined wsync
     LDY     PFIndex
-    BNE     __label_40
+    BNE     __label_50
     JMP     __local28_NextFrame
-__label_40
+__label_50
     DEY
 ;  				gp0=a=tmpGP0
     LDA     tmpGP0
@@ -552,9 +522,9 @@ __label_40
     LDA     #$0A
     SEc
     ISC     YP0
-    BCS     __label_41
+    BCS     __label_51
     LDA     #$00
-__label_41
+__label_51
     TAY
 ;  				PF1=a=tmpPF1
     LDA     tmpPF1
@@ -609,7 +579,7 @@ __label_41
 ;  				YP0++
     INC     YP0
 ;  			} always
-    JMP     __label_39
+    JMP     __label_49
 ;  		.NextFrame:
 __local28_NextFrame
 ;  	} always
