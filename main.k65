@@ -1,100 +1,136 @@
-var PFIndex = 0x80, PFCount, YPos0, XPos0, YPos1, XPos1, YP0, YP1
-var PFPtr[2] = 0x90, SpritePtr0[2], SpritePtr1[2]
-var xspeed = 0xA0, yspeed, xacc, yacc, state, move
-var Temp=0xB0, tmpPF0, tmpPF1, tmpPF2, tmpPF3, tmpPF4, tmpPF5, tmpGP0, Temp2, Temp3
+var flip=0x80, key_press_counter, temp1
+var camera_y[2]=0x90, camera_y_offset, camera_y_cover
+var ptr_map_pf0_0[2]=0xA0, ptr_map_pf1_0[2], ptr_map_pf2_0[2], ptr_map_pf0_1[2], ptr_map_pf1_1[2], ptr_map_pf2_1[2]
 
-[ PLAYER_COLOR=0x33, ENEMY_COLOR=0x88, MAP_COLOR=0x56 ]
 
-inline EnableSpritesAndPlayfield {
-	cp0=a=PLAYER_COLOR cp1=a=ENEMY_COLOR cpf=a=MAP_COLOR
+// CONSTANTS
+[ASYNC_PLAYFIELD_NOP_COUNT=6]
+[CAMERA_Y_LIMIT=231]
+
+inline draw_map_one_scanline_a {
+		a=0x80 x?0 != { x-- a=0x0 }  cpf=a
+
+		pf0=a=(ptr_map_pf0_0),y
+		pf1=a=(ptr_map_pf1_0),y
+		pf2=a=(ptr_map_pf2_0),y
+		pf2=a=(ptr_map_pf2_1),y
+		pf1=a=(ptr_map_pf1_1),y
+		pf0=a=(ptr_map_pf0_1),y
 }
 
-inline DisableSpritesAndPlayfield {
-	//cp0=cp1=
-	cpf=a=0
+inline draw_map_one_scanline_b {
+		a=0x0 x?0 != { x-- a=0x80 }  cpf=a
+
+		pf0=a=(ptr_map_pf0_0),y
+		pf1=a=(ptr_map_pf1_0),y
+		pf2=a=(ptr_map_pf2_0),y
+		pf2=a=(ptr_map_pf2_1),y
+		pf1=a=(ptr_map_pf1_1),y
+		pf0=a=(ptr_map_pf0_1),y
+	
+}
+
+inline draw_map_8_scanlines {
+		draw_map_one_scanline_a wsync
+		draw_map_one_scanline_a wsync
+		draw_map_one_scanline_a wsync
+		draw_map_one_scanline_a wsync 
+		draw_map_one_scanline_a wsync
+		draw_map_one_scanline_a wsync 
+		draw_map_one_scanline_a wsync
+		draw_map_one_scanline_a
+}
+
+
+inline draw_map_8_scanlines_b {
+		draw_map_one_scanline_b wsync
+		draw_map_one_scanline_b wsync
+		draw_map_one_scanline_b wsync
+		draw_map_one_scanline_b wsync
+		draw_map_one_scanline_b wsync
+		draw_map_one_scanline_b wsync
+		draw_map_one_scanline_b wsync
+		draw_map_one_scanline_b
+}
+
+inline draw_map_frame {
+	y=camera_y_offset { 
+		wsync y--
+	} !=
+
+	wsync x=camera_y_cover 
+	// y=23 a=0x0 wsync
+	// {
+	// 	draw_map_8_scanlines
+	// 	y--
+	// } !=
+
+	y=23 a=0x0 wsync
+	draw_map_8_scanlines y--
+	draw_map_8_scanlines y--
+	draw_map_8_scanlines y--
+	draw_map_8_scanlines y--
+	draw_map_8_scanlines y--
+	draw_map_8_scanlines y--
+	
+
+	// x=camera_y_cover == { goto .endframe } wsync
+	// draw_map_8_scanlines_b
+	// .endframe:
+	wsync pf0=pf1=pf2=a=0 cpf=a=0x0 
+}
+
+inline draw_sprites_frame {
+	y=190
+	{
+		wsync y--
+	} !=
 }
 
 main {
 	init
-	Data0:
-		PFPtr=a=&<Data0 			PFPtr+1=a=&>Data0
-		SpritePtr0=a=&<hero 		SpritePtr0+1=a=&>hero
-		SpritePtr1=a=&<hero			SpritePtr1+1=a=&>hero
-		YPos0=a=180	YPos1=a=200		XPos0=XPos1=a=38
-		ctpf=a=0x01
-		PF0=a=0xF0
-		EnableSpritesAndPlayfield
+
+	ctpf=a=1
+	
+	ptr_map_pf0_0+1=a=&>map1_pf0_0
+	ptr_map_pf1_0+1=a=&>map1_pf1_0 
+	ptr_map_pf2_0+1=a=&>map1_pf2_0
+	ptr_map_pf0_1+1=a=&>map1_pf0_1
+	ptr_map_pf1_1+1=a=&>map1_pf1_1
+	ptr_map_pf2_1+1=a=&>map1_pf2_1
+
 	{
 		sync1
-			PFIndex=a=48 YP0=a=YPos0 YP1=a=YPos1 tmpGP0=a=0 
-			
-			// 
-			x=xspeed
-			a&?swcha
-			>>= {
-				// left 
-				a&?xspeed >=0 { x=0 }
-				x--
-			} 
-			else {
-				>=0 { 
-					// right
-					a&?xspeed <0 { x=0 }
-					x++
+			cpf=pf0=pf1=pf2=a=0
+			a=flip a^0x01 flip=a
+
+			// handle input
+			a=swcha a&0x10 == {
+				a=camera_y+1 a?CAMERA_Y_LIMIT < { c- a=camera_y a+0x20 camera_y=a a=camera_y+1 a+0 camera_y+1=a }
+			}
+
+			a=swcha a&0x20 == {
+				a=camera_y a&0xE0 == {
+					a=camera_y+1 != {
+						c+ a-1 camera_y+1=a
+						camera_y=a=0xE0
+					}
 				}
-				else { x=0 }
+				else { c+ a-0x20 camera_y=a }
 			}
-			xspeed=x
-			a&?xspeed >=0
-			{
-				a=xspeed a>> a>> c- a+XPos0 a?152 >= { a=152 } XPos0=a
-			} else {
-				a=xspeed a^0xff c- a+1 a>> a>> Temp=a c+ a=XPos0 a-Temp <{ a=0 } XPos0=a
-			}
+			a=camera_y a>> a>> a>> a>> a>> c- a+1 camera_y_offset=a
+			a=8 c+ a-camera_y_offset camera_y_cover=a 
 			
 		sync2
-			a=XPos0 x=0 SetHorizPos
-			a=XPos1 x=1 SetHorizPos			
-			wsync hmove=a
-		sync3
-			// 2/4 lines kernel, async playfield 4 lines, sprite0 2lines
-			{
-				wsync
-				y=PFIndex == { goto .NextFrame } y--
-				gp0=a=tmpGP0
-				PF1=a=pf1_0,y
-				PF2=tmpPF2=a=pf2_0,y
-				PF2=tmpPF5=a=pf1_1,y
-				PF1=tmpPF4=a=pf2_1,y
-				tmpPF1=a=pf1_0,y
-				PFIndex=y
+			
+			// set ptrs to camera movement
+			a=camera_y+1
+			ptr_map_pf0_0=ptr_map_pf1_0=ptr_map_pf2_0=ptr_map_pf0_1=ptr_map_pf1_1=ptr_map_pf2_1=a
 
-				wsync
-				PF1=a=tmpPF1
-				PF2=a=tmpPF2
-				// PLENTY OF TIME HERE
-				*24
-				PF2=a=tmpPF5
-				PF1=a=tmpPF4
-				
-				wsync
-				a=SPRITE_HEIGHT c+ a - ++YP0 < { a=0 } y=a
-				PF1=a=tmpPF1
-				PF2=a=tmpPF2
-				gp0=a=(SpritePtr0),y 
-				PF2=a=tmpPF5
-				PF1=a=tmpPF4					
-				y-- tmpGP0=a=(SpritePtr0),y 
-				
-				wsync
-				PF1=a=tmpPF1
-				PF2=a=tmpPF2
-				// PLENTY OF TIME HERE
-				*24
-				PF2=a=tmpPF5
-				PF1=a=tmpPF4
-				YP0++
-			} always
-		.NextFrame:
+		sync3
+			draw_map_frame
+			// a=flip 
+			// == { draw_map_frame }
+			// else { draw_sprites_frame }
 	} always
 }

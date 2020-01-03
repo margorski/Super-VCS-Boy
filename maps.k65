@@ -1,0 +1,24 @@
+// data map1_pf0_0 {
+// 	align 256
+// 	image "data\map1" 3 255 4< 256^	
+// }
+// data map1_pf1_0 {
+// 	align 256
+// 	image "data\map1" 4 255 8> 256^	
+// }
+// data map1_pf2_0 {
+// 	align 256
+// 	image "data\map1" 19 255 8< 256^	
+// }
+// data map1_pf0_1 {
+// 	align 256
+// 	image "data\map1" 36 255 4> 256^	
+// }
+// data map1_pf1_1 {
+// 	align 256
+// 	image "data\map1" 35 255 8< 256^	
+// }
+// data map1_pf2_1 {
+// 	align 256
+// 	image "data\map1" 20 255 8> 256^	
+// }

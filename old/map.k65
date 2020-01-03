@@ -8,12 +8,12 @@ data pf2_0 {
 	image test 19 47 8< 48^	
 }
 
-data pf1_1 {
+data pf2_1 {
 	align 256
 	image test 20 47 8> 48^	
 }
 
-data pf2_1 {
+data pf1_1 {
 	align 256
 	image test 35 47 8< 48^	
 }

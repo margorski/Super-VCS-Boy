@@ -1,8 +1,4 @@
-inline ComputeU2 {
-	a^0xff c- a+1
-}
-
-func SetHorizPos {
+inline SetHorizPos {
 	wsync 
 	*3 c+ {	a-15 } >=
 	a^0x07 a<< a<< a<< a<<

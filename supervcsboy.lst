@@ -1,590 +1,2843 @@
-; section SetHorizPos
-SetHorizPos
-	; inlined wsync
-    STA     WSYNC
-	; end of inlined wsync
-;  	wsync 
-;  	*3 c+ {	a-15 } >=
-    NOP     $80
-    SEc
-__label_3
-    SBC     #$0F
-    BCS     __label_3
-;  	a^0x07 a<< a<< a<< a<<
-    EOR     #$07
-    ASL
-    ASL
-    ASL
-    ASL
-;  	rp0,x=a hp0,x=a
-    STA     rp0,X
-    STA     hp0,X
+; section map1_pf0_0
+map1_pf0_0
+;  	align 256
+;  	image "data\map1" 3 255 4< 256^	
+    .byte   #$00
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$00
 ;  }
-;  
-    RTS
-; section hero
-hero
-    .byte     #$00
-;  	0
-;  	0
-;  	image hero2 0 7 8> 8^
-    .byte     #$00
-    .byte   #$66
+;  data map1_pf1_0 {
+; section map1_pf1_0
+map1_pf1_0
+;  	align 256
+;  	image "data\map1" 4 255 8> 256^	
+    .byte   #$00
     .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$BF
+    .byte   #$8F
+    .byte   #$B3
+    .byte   #$BD
+    .byte   #$BE
+    .byte   #$BF
+    .byte   #$BF
+    .byte   #$BE
+    .byte   #$99
+    .byte   #$E7
     .byte   #$F3
-    .byte   #$E1
     .byte   #$FF
-    .byte   #$8C
-    .byte   #$CD
     .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$C0
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$E0
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$F0
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FE
+    .byte   #$FD
+    .byte   #$FB
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FC
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$C0
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$00
 ;  }
-;  
-; section pf1_0
-pf1_0
+;  data map1_pf2_0 {
+; section map1_pf2_0
+map1_pf2_0
 ;  	align 256
-;  	image test 4 47 8> 48^	
+;  	image "data\map1" 19 255 8< 256^	
     .byte   #$00
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$DF
+    .byte   #$1F
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DE
+    .byte   #$DD
+    .byte   #$DE
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
     .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$3F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FE
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
     .byte   #$0F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$E0
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$7F
+    .byte   #$BF
+    .byte   #$DF
+    .byte   #$EF
+    .byte   #$EF
+    .byte   #$F7
+    .byte   #$FB
+    .byte   #$FD
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$3F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FB
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$EF
+    .byte   #$DF
+    .byte   #$BF
+    .byte   #$7F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
     .byte   #$00
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FC
+    .byte   #$F3
+    .byte   #$EF
+    .byte   #$9F
+    .byte   #$7F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$BF
+    .byte   #$DF
+    .byte   #$EF
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$FB
+    .byte   #$FD
+    .byte   #$FE
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$F8
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
     .byte   #$00
+;  }
+;  data map1_pf0_1 {
+; section map1_pf0_1
+map1_pf0_1
+;  	align 256
+;  	image "data\map1" 36 255 4> 256^	
     .byte   #$00
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$A0
+    .byte   #$A0
+    .byte   #$A0
+    .byte   #$60
+    .byte   #$60
+    .byte   #$20
+    .byte   #$60
+    .byte   #$60
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
+    .byte   #$E0
     .byte   #$00
+;  }
+;  data map1_pf1_1 {
+; section map1_pf1_1
+map1_pf1_1
+;  	align 256
+;  	image "data\map1" 35 255 8< 256^	
     .byte   #$00
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$EF
+    .byte   #$0F
+    .byte   #$EF
+    .byte   #$DF
+    .byte   #$5F
+    .byte   #$5F
+    .byte   #$5F
+    .byte   #$3F
+    .byte   #$3E
+    .byte   #$BD
+    .byte   #$BB
+    .byte   #$FC
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$F7
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$7F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FE
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$C0
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$7F
+    .byte   #$BF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$EF
+    .byte   #$F7
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FD
+    .byte   #$FE
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
     .byte   #$00
+;  }
+;  data map1_pf2_1 {
+; section map1_pf2_1
+map1_pf2_1
+;  	align 256
+;  	image "data\map1" 20 255 8> 256^	
     .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$1F
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DD
+    .byte   #$DD
+    .byte   #$DD
+    .byte   #$DD
+    .byte   #$DD
+    .byte   #$DD
+    .byte   #$DA
+    .byte   #$DA
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FB
+    .byte   #$FA
+    .byte   #$F9
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$3F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$EF
+    .byte   #$EF
+    .byte   #$EF
+    .byte   #$EF
+    .byte   #$EF
+    .byte   #$EF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$DF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$07
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$0F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$7F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$03
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$7F
+    .byte   #$BF
+    .byte   #$DF
+    .byte   #$EF
+    .byte   #$F7
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$1F
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$7F
+    .byte   #$9F
+    .byte   #$EF
+    .byte   #$F3
+    .byte   #$FC
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$E0
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FF
+    .byte   #$FE
+    .byte   #$FE
+    .byte   #$FF
     .byte   #$FF
     .byte   #$00
 ;  }
 ;  
-; section pf2_0
-pf2_0
-;  	align 256
-;  	image test 19 47 8< 48^	
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$10
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$80
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$00
-;  }
-;  
-; section pf1_1
-pf1_1
-;  	align 256
-;  	image test 20 47 8> 48^	
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$00
-;  }
-;  
-; section pf2_1
-pf2_1
-;  	align 256
-;  	image test 35 47 8< 48^	
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$01
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$00
-    .byte   #$FF
-    .byte   #$00
-;  }
 ; section main
 main
 	; inlined init
+__I52init
     SEi
     CLd
     LDX     #$FF
     TXS
     LDA     #$00
-__I17__label_1
+__I52__label_1
     STA     zeropage,X
     DEX
-	BNE	__I17__label_1
+	BNE	__I52__label_1
 	; end of inlined init
 ;  	init
-;  	Data0:
-Data0
-;  		PFPtr=a=&<Data0 			PFPtr+1=a=&>Data0
-    LDA     #<(Data0)
-    STA     PFPtr
-    LDA     #>(Data0)
-    STA     PFPtr+1
-;  		SpritePtr0=a=&<hero 		SpritePtr0+1=a=&>hero
-    LDA     #<(hero)
-    STA     SpritePtr0
-    LDA     #>(hero)
-    STA     SpritePtr0+1
-;  		SpritePtr1=a=&<hero			SpritePtr1+1=a=&>hero
-    LDA     #<(hero)
-    STA     SpritePtr1
-    LDA     #>(hero)
-    STA     SpritePtr1+1
-;  		YPos0=a=180	YPos1=a=200		XPos0=XPos1=a=38
-    LDA     #$B4
-    STA     YPos0
-    LDA     #$C8
-    STA     YPos1
-    LDA     #$26
-    STA     XPos1
-    STA     XPos0
-;  		ctpf=a=0x01
+;  
+;  	ctpf=a=1
     LDA     #$01
     STA     ctpf
-;  		PF0=a=0xF0
-    LDA     #$F0
-    STA     PF0
-;  		EnableSpritesAndPlayfield
+;  	
+;  	ptr_map_pf0_0+1=a=&>map1_pf0_0
+    LDA     #>(map1_pf0_0)
+    STA     ptr_map_pf0_0+1
+;  	ptr_map_pf1_0+1=a=&>map1_pf1_0 
+    LDA     #>(map1_pf1_0)
+    STA     ptr_map_pf1_0+1
+;  	ptr_map_pf2_0+1=a=&>map1_pf2_0
+    LDA     #>(map1_pf2_0)
+    STA     ptr_map_pf2_0+1
+;  	ptr_map_pf0_1+1=a=&>map1_pf0_1
+    LDA     #>(map1_pf0_1)
+    STA     ptr_map_pf0_1+1
+;  	ptr_map_pf1_1+1=a=&>map1_pf1_1
+    LDA     #>(map1_pf1_1)
+    STA     ptr_map_pf1_1+1
+;  	ptr_map_pf2_1+1=a=&>map1_pf2_1
+    LDA     #>(map1_pf2_1)
+    STA     ptr_map_pf2_1+1
+;  
 ;  	{
-	; inlined EnableSpritesAndPlayfield
-    LDA     #$33
-    STA     cp0
-    LDA     #$88
-    STA     cp1
-    LDA     #$56
-    STA     cpf
-	; end of inlined EnableSpritesAndPlayfield
 ;  		sync1
-__label_38
-;  			PFIndex=a=48 YP0=a=YPos0 YP1=a=YPos1 tmpGP0=a=0 
+__label_8
+;  			cpf=pf0=pf1=pf2=a=0
 	; inlined sync1
-__I19__I1__label_2
+__I53sync1
+__I53__I1timwait
+__I53__I1__label_2
     LDA     INTIM
-	BNE	__I19__I1__label_2
+	BNE	__I53__I1__label_2
+__I53__I2wsync
     STA     WSYNC
     LDA     #$02
     STA     VBLANK
     LDA     #$21
     STA     TIM64T
 	; end of inlined sync1
-    LDA     #$30
-    STA     PFIndex
-    LDA     YPos0
-    STA     YP0
-    LDA     YPos1
-    STA     YP1
     LDA     #$00
-    STA     tmpGP0
-;  			
-;  			// 
-;  			x=xspeed
-    LDX     xspeed
-;  			a&?swcha
-    BIT     swcha
-;  			>>= {
-    BVS     __label_39
-;  				// left 
-;  				a&?xspeed >=0 { x=0 }
-    BIT     xspeed
-    BMI     __label_40
-    LDX     #$00
-;  				x--
-__label_40
-    DEX
-;  			} 
-    JMP     __label_41
-__label_39
-;  			else {
-;  				>=0 { 
-    BMI     __label_42
-;  					// right
-;  					a&?xspeed <0 { x=0 }
-    BIT     xspeed
-    BPL     __label_43
-    LDX     #$00
-;  					x++
-__label_43
-    INX
-;  				}
-;  				else { x=0 }
-    JMP     __label_44
-__label_42
-    LDX     #$00
-;  			}
-__label_44
-;  			xspeed=x
-__label_41
-    STX     xspeed
-;  			a&?xspeed >=0
-    BIT     xspeed
-;  			{
-    BMI     __label_45
-;  				a=xspeed a>> a>> c- a+XPos0 a?152 >= { a=152 } XPos0=a
-    LDA     xspeed
-    LSR
-    LSR
+    STA     pf2
+    STA     pf1
+    STA     pf0
+    STA     cpf
+;  			a=flip a^0x01 flip=a
+    LDA     flip
+    EOR     #$01
+    STA     flip
+;  
+;  			// handle input
+;  			a=swcha a&0x10 == {
+    LDA     swcha
+    AND     #$10
+    BNE     __label_9
+;  				a=camera_y+1 a?CAMERA_Y_LIMIT < { c- a=camera_y a+0x20 camera_y=a a=camera_y+1 a+0 camera_y+1=a }
+    LDA     camera_y+1
+    CMP     #$E7
+    BCS     __label_10
     CLc
-    ADC     XPos0
-    CMP     #$98
-    BCC     __label_46
-    LDA     #$98
-__label_46
-    STA     XPos0
-;  			} else {
-    JMP     __label_47
-__label_45
-;  				a=xspeed a^0xff c- a+1 a>> a>> Temp=a c+ a=XPos0 a-Temp <{ a=0 } XPos0=a
-    LDA     xspeed
-    EOR     #$FF
+    LDA     camera_y
+    ADC     #$20
+    STA     camera_y
+    LDA     camera_y+1
+    ADC     #$00
+    STA     camera_y+1
+;  			}
+__label_10
+;  
+__label_9
+;  			a=swcha a&0x20 == {
+    LDA     swcha
+    AND     #$20
+    BNE     __label_11
+;  				a=camera_y a&0xE0 == {
+    LDA     camera_y
+    AND     #$E0
+    BNE     __label_12
+;  					a=camera_y+1 != {
+    LDA     camera_y+1
+    BEQ     __label_13
+;  						c+ a-1 camera_y+1=a
+    SEc
+    SBC     #$01
+    STA     camera_y+1
+;  						camera_y=a=0xE0
+    LDA     #$E0
+    STA     camera_y
+;  					}
+;  				}
+__label_13
+;  				else { c+ a-0x20 camera_y=a }
+    JMP     __label_14
+__label_12
+    SEc
+    SBC     #$20
+    STA     camera_y
+;  			}
+__label_14
+;  			a=camera_y a>> a>> a>> a>> a>> c- a+1 camera_y_offset=a
+__label_11
+    LDA     camera_y
+    LSR
+    LSR
+    LSR
+    LSR
+    LSR
     CLc
     ADC     #$01
-    LSR
-    LSR
-    STA     Temp
+    STA     camera_y_offset
+;  			a=8 c+ a-camera_y_offset camera_y_cover=a 
+    LDA     #$08
     SEc
-    LDA     XPos0
-    SBC     Temp
-    BCS     __label_48
-    LDA     #$00
-__label_48
-    STA     XPos0
-;  			}
+    SBC     camera_y_offset
+    STA     camera_y_cover
 ;  			
-__label_47
 ;  		sync2
-;  			a=XPos0 x=0 SetHorizPos
+;  			
 	; inlined sync2
-__I20__I3__label_2
+__I54sync2
+__I54__I3timwait
+__I54__I3__label_2
     LDA     INTIM
-	BNE	__I20__I3__label_2
+	BNE	__I54__I3__label_2
+__I54__I4wsync
     STA     WSYNC
     LDA     #$02
     STA     VSYNC
+__I54__I5wsync
     STA     WSYNC
+__I54__I6wsync
     STA     WSYNC
     LDA     #$00
+__I54__I7wsync
     STA     WSYNC
     STA     VSYNC
     LDA     #$2C
     STA     TIM64T
 	; end of inlined sync2
-    LDA     XPos0
-    LDX     #$00
-;  			a=XPos1 x=1 SetHorizPos			
-    JSR     SetHorizPos
-    LDA     XPos1
-    LDX     #$01
-    JSR     SetHorizPos
-;  			wsync hmove=a
-	; inlined wsync
-    STA     WSYNC
-	; end of inlined wsync
-    STA     hmove
+;  			// set ptrs to camera movement
+;  			a=camera_y+1
+    LDA     camera_y+1
+;  			ptr_map_pf0_0=ptr_map_pf1_0=ptr_map_pf2_0=ptr_map_pf0_1=ptr_map_pf1_1=ptr_map_pf2_1=a
+    STA     ptr_map_pf2_1
+    STA     ptr_map_pf1_1
+    STA     ptr_map_pf0_1
+    STA     ptr_map_pf2_0
+    STA     ptr_map_pf1_0
+    STA     ptr_map_pf0_0
+;  
 ;  		sync3
-;  			// 2/4 lines kernel, async playfield 4 lines, sprite0 2lines
+;  			draw_map_frame
 	; inlined sync3
-__I22__I8__label_2
+__I55sync3
+__I55__I8timwait
+__I55__I8__label_2
     LDA     INTIM
-	BNE	__I22__I8__label_2
+	BNE	__I55__I8__label_2
+__I55__I9wsync
     STA     WSYNC
     LDA     #$00
     STA     VBLANK
     LDA     #$E7
     STA     TIM64T
 	; end of inlined sync3
-;  			{
-;  				wsync
-__label_49
-;  				y=PFIndex == { goto .NextFrame } y--
-	; inlined wsync
+;  			// a=flip 
+	; inlined draw_map_frame
+__I56draw_map_frame
+    LDY     camera_y_offset
+__I56__label_6
+__I56__I41wsync
     STA     WSYNC
-	; end of inlined wsync
-    LDY     PFIndex
-    BNE     __label_50
-    JMP     __local28_NextFrame
-__label_50
     DEY
-;  				gp0=a=tmpGP0
-    LDA     tmpGP0
-    STA     gp0
-;  				PF1=a=pf1_0,y
-    LDA     pf1_0,Y
-    STA     PF1
-;  				PF2=tmpPF2=a=pf2_0,y
-    LDA     pf2_0,Y
-    STA     tmpPF2
-    STA     PF2
-;  				PF2=tmpPF5=a=pf1_1,y
-    LDA     pf1_1,Y
-    STA     tmpPF5
-    STA     PF2
-;  				PF1=tmpPF4=a=pf2_1,y
-    LDA     pf2_1,Y
-    STA     tmpPF4
-    STA     PF1
-;  				tmpPF1=a=pf1_0,y
-    LDA     pf1_0,Y
-    STA     tmpPF1
-;  				PFIndex=y
-    STY     PFIndex
-;  
-;  				wsync
-;  				PF1=a=tmpPF1
-	; inlined wsync
+	BNE	__I56__label_6
+__I56__I42wsync
     STA     WSYNC
-	; end of inlined wsync
-    LDA     tmpPF1
-    STA     PF1
-;  				PF2=a=tmpPF2
-    LDA     tmpPF2
-    STA     PF2
-;  				// PLENTY OF TIME HERE
-;  				*24
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-;  				PF2=a=tmpPF5
-    LDA     tmpPF5
-    STA     PF2
-;  				PF1=a=tmpPF4
-    LDA     tmpPF4
-    STA     PF1
-;  				
-;  				wsync
-;  				a=SPRITE_HEIGHT c+ a - ++YP0 < { a=0 } y=a
-	; inlined wsync
-    STA     WSYNC
-	; end of inlined wsync
-    LDA     #$0A
-    SEc
-    ISC     YP0
-    BCS     __label_51
+    LDX     camera_y_cover
+    LDY     #$17
     LDA     #$00
-__label_51
-    TAY
-;  				PF1=a=tmpPF1
-    LDA     tmpPF1
-    STA     PF1
-;  				PF2=a=tmpPF2
-    LDA     tmpPF2
-    STA     PF2
-;  				gp0=a=(SpritePtr0),y 
-    LDA     (SpritePtr0),Y
-    STA     gp0
-;  				PF2=a=tmpPF5
-    LDA     tmpPF5
-    STA     PF2
-;  				PF1=a=tmpPF4					
-    LDA     tmpPF4
-    STA     PF1
-;  				y-- tmpGP0=a=(SpritePtr0),y 
-    DEY
-    LDA     (SpritePtr0),Y
-    STA     tmpGP0
-;  				
-;  				wsync
-;  				PF1=a=tmpPF1
-	; inlined wsync
+__I56__I43wsync
     STA     WSYNC
-	; end of inlined wsync
-    LDA     tmpPF1
-    STA     PF1
-;  				PF2=a=tmpPF2
-    LDA     tmpPF2
-    STA     PF2
-;  				// PLENTY OF TIME HERE
-;  				*24
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-;  				PF2=a=tmpPF5
-    LDA     tmpPF5
-    STA     PF2
-;  				PF1=a=tmpPF4
-    LDA     tmpPF4
-    STA     PF1
-;  				YP0++
-    INC     YP0
-;  			} always
-    JMP     __label_49
-;  		.NextFrame:
-__local28_NextFrame
+__I56__I44draw_map_8_scanlines
+__I56__I44__I11draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I11__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I11__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I44__I12wsync
+    STA     WSYNC
+__I56__I44__I13draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I13__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I13__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I44__I14wsync
+    STA     WSYNC
+__I56__I44__I15draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I15__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I15__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I44__I16wsync
+    STA     WSYNC
+__I56__I44__I17draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I17__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I17__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I44__I18wsync
+    STA     WSYNC
+__I56__I44__I19draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I19__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I19__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I44__I20wsync
+    STA     WSYNC
+__I56__I44__I21draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I21__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I21__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I44__I22wsync
+    STA     WSYNC
+__I56__I44__I23draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I23__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I23__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I44__I24wsync
+    STA     WSYNC
+__I56__I44__I25draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I44__I25__label_4
+    DEX
+    LDA     #$00
+__I56__I44__I25__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+    DEY
+__I56__I45draw_map_8_scanlines
+__I56__I45__I11draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I11__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I11__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I45__I12wsync
+    STA     WSYNC
+__I56__I45__I13draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I13__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I13__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I45__I14wsync
+    STA     WSYNC
+__I56__I45__I15draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I15__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I15__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I45__I16wsync
+    STA     WSYNC
+__I56__I45__I17draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I17__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I17__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I45__I18wsync
+    STA     WSYNC
+__I56__I45__I19draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I19__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I19__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I45__I20wsync
+    STA     WSYNC
+__I56__I45__I21draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I21__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I21__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I45__I22wsync
+    STA     WSYNC
+__I56__I45__I23draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I23__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I23__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I45__I24wsync
+    STA     WSYNC
+__I56__I45__I25draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I45__I25__label_4
+    DEX
+    LDA     #$00
+__I56__I45__I25__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+    DEY
+__I56__I46draw_map_8_scanlines
+__I56__I46__I11draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I11__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I11__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I46__I12wsync
+    STA     WSYNC
+__I56__I46__I13draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I13__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I13__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I46__I14wsync
+    STA     WSYNC
+__I56__I46__I15draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I15__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I15__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I46__I16wsync
+    STA     WSYNC
+__I56__I46__I17draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I17__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I17__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I46__I18wsync
+    STA     WSYNC
+__I56__I46__I19draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I19__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I19__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I46__I20wsync
+    STA     WSYNC
+__I56__I46__I21draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I21__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I21__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I46__I22wsync
+    STA     WSYNC
+__I56__I46__I23draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I23__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I23__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I46__I24wsync
+    STA     WSYNC
+__I56__I46__I25draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I46__I25__label_4
+    DEX
+    LDA     #$00
+__I56__I46__I25__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+    DEY
+__I56__I47draw_map_8_scanlines
+__I56__I47__I11draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I11__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I11__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I47__I12wsync
+    STA     WSYNC
+__I56__I47__I13draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I13__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I13__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I47__I14wsync
+    STA     WSYNC
+__I56__I47__I15draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I15__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I15__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I47__I16wsync
+    STA     WSYNC
+__I56__I47__I17draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I17__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I17__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I47__I18wsync
+    STA     WSYNC
+__I56__I47__I19draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I19__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I19__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I47__I20wsync
+    STA     WSYNC
+__I56__I47__I21draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I21__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I21__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I47__I22wsync
+    STA     WSYNC
+__I56__I47__I23draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I23__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I23__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I47__I24wsync
+    STA     WSYNC
+__I56__I47__I25draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I47__I25__label_4
+    DEX
+    LDA     #$00
+__I56__I47__I25__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+    DEY
+__I56__I48draw_map_8_scanlines
+__I56__I48__I11draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I11__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I11__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I48__I12wsync
+    STA     WSYNC
+__I56__I48__I13draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I13__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I13__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I48__I14wsync
+    STA     WSYNC
+__I56__I48__I15draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I15__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I15__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I48__I16wsync
+    STA     WSYNC
+__I56__I48__I17draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I17__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I17__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I48__I18wsync
+    STA     WSYNC
+__I56__I48__I19draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I19__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I19__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I48__I20wsync
+    STA     WSYNC
+__I56__I48__I21draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I21__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I21__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I48__I22wsync
+    STA     WSYNC
+__I56__I48__I23draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I23__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I23__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I48__I24wsync
+    STA     WSYNC
+__I56__I48__I25draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I48__I25__label_4
+    DEX
+    LDA     #$00
+__I56__I48__I25__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+    DEY
+__I56__I49draw_map_8_scanlines
+__I56__I49__I11draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I11__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I11__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I49__I12wsync
+    STA     WSYNC
+__I56__I49__I13draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I13__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I13__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I49__I14wsync
+    STA     WSYNC
+__I56__I49__I15draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I15__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I15__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I49__I16wsync
+    STA     WSYNC
+__I56__I49__I17draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I17__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I17__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I49__I18wsync
+    STA     WSYNC
+__I56__I49__I19draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I19__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I19__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I49__I20wsync
+    STA     WSYNC
+__I56__I49__I21draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I21__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I21__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I49__I22wsync
+    STA     WSYNC
+__I56__I49__I23draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I23__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I23__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+__I56__I49__I24wsync
+    STA     WSYNC
+__I56__I49__I25draw_map_one_scanline_a
+    LDA     #$80
+    CPX     #$00
+	BEQ	__I56__I49__I25__label_4
+    DEX
+    LDA     #$00
+__I56__I49__I25__label_4
+    STA     cpf
+    LDA     (ptr_map_pf0_0),Y
+    STA     pf0
+    LDA     (ptr_map_pf1_0),Y
+    STA     pf1
+    LDA     (ptr_map_pf2_0),Y
+    STA     pf2
+    LDA     (ptr_map_pf2_1),Y
+    STA     pf2
+    LDA     (ptr_map_pf1_1),Y
+    STA     pf1
+    LDA     (ptr_map_pf0_1),Y
+    STA     pf0
+    DEY
+__I56__I50wsync
+    STA     WSYNC
+    LDA     #$00
+    STA     pf2
+    STA     pf1
+    STA     pf0
+    LDA     #$00
+    STA     cpf
+	; end of inlined draw_map_frame
+;  			// == { draw_map_frame }
+;  			// else { draw_sprites_frame }
 ;  	} always
-    JMP     __label_38
+    JMP     __label_8
 ;  }
+;  
 ; section __vectors
     NOP
     NOP
