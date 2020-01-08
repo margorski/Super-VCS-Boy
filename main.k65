@@ -2,89 +2,50 @@ var flip=0x80, key_press_counter, temp1
 var camera_y[2]=0x90, camera_y_offset, camera_y_cover
 var ptr_map_pf0_0[2]=0xA0, ptr_map_pf1_0[2], ptr_map_pf2_0[2], ptr_map_pf0_1[2], ptr_map_pf1_1[2], ptr_map_pf2_1[2]
 
-
 // CONSTANTS
-[ASYNC_PLAYFIELD_NOP_COUNT=6]
 [CAMERA_Y_LIMIT=231]
 
-inline draw_map_one_scanline_a {
-		a=0x80 x?0 != { x-- a=0x0 }  cpf=a
-
+inline draw_map_x_scanlines { 
+	{
+		wsync
 		pf0=a=(ptr_map_pf0_0),y
 		pf1=a=(ptr_map_pf1_0),y
 		pf2=a=(ptr_map_pf2_0),y
-		pf2=a=(ptr_map_pf2_1),y
-		pf1=a=(ptr_map_pf1_1),y
 		pf0=a=(ptr_map_pf0_1),y
-}
-
-inline draw_map_one_scanline_b {
-		a=0x0 x?0 != { x-- a=0x80 }  cpf=a
-
-		pf0=a=(ptr_map_pf0_0),y
-		pf1=a=(ptr_map_pf1_0),y
-		pf2=a=(ptr_map_pf2_0),y
-		pf2=a=(ptr_map_pf2_1),y
 		pf1=a=(ptr_map_pf1_1),y
-		pf0=a=(ptr_map_pf0_1),y
-	
-}
+		pf2=a=(ptr_map_pf2_1),y
 
-inline draw_map_8_scanlines {
-		draw_map_one_scanline_a wsync
-		draw_map_one_scanline_a wsync
-		draw_map_one_scanline_a wsync
-		draw_map_one_scanline_a wsync 
-		draw_map_one_scanline_a wsync
-		draw_map_one_scanline_a wsync 
-		draw_map_one_scanline_a wsync
-		draw_map_one_scanline_a
-}
+		// plenty of time
 
-
-inline draw_map_8_scanlines_b {
-		draw_map_one_scanline_b wsync
-		draw_map_one_scanline_b wsync
-		draw_map_one_scanline_b wsync
-		draw_map_one_scanline_b wsync
-		draw_map_one_scanline_b wsync
-		draw_map_one_scanline_b wsync
-		draw_map_one_scanline_b wsync
-		draw_map_one_scanline_b
+		x--
+	} !=
 }
 
 inline draw_map_frame {
-	y=camera_y_offset { 
-		wsync y--
-	} !=
+	cpf=a=0x0 y=8 
+	!= {
+		{ 
+			wsync y--
+		} !=
+	}
 
-	wsync x=camera_y_cover 
-	// y=23 a=0x0 wsync
-	// {
-	// 	draw_map_8_scanlines
-	// 	y--
-	// } !=
+	y=23 cpf=a=0x80 
+	x=camera_y_offset != {
+		draw_map_x_scanlines 
+	}
 
-	y=23 a=0x0 wsync
-	draw_map_8_scanlines y--
-	draw_map_8_scanlines y--
-	draw_map_8_scanlines y--
-	draw_map_8_scanlines y--
-	draw_map_8_scanlines y--
-	draw_map_8_scanlines y--
-	
-
-	// x=camera_y_cover == { goto .endframe } wsync
-	// draw_map_8_scanlines_b
-	// .endframe:
-	wsync pf0=pf1=pf2=a=0 cpf=a=0x0 
-}
-
-inline draw_sprites_frame {
-	y=190
+	y-- 
 	{
-		wsync y--
+		x=8 
+		draw_map_x_scanlines
+		y--
 	} !=
+	
+	x=camera_y_cover != { 
+		draw_map_x_scanlines
+	}
+	
+	wsync pf0=pf1=pf2=a=0 cpf=a=0x0 
 }
 
 main {
@@ -118,19 +79,14 @@ main {
 				}
 				else { c+ a-0x20 camera_y=a }
 			}
-			a=camera_y a>> a>> a>> a>> a>> c- a+1 camera_y_offset=a
+			a=camera_y a>> a>> a>> a>> a>> camera_y_offset=a
 			a=8 c+ a-camera_y_offset camera_y_cover=a 
-			
 		sync2
-			
 			// set ptrs to camera movement
 			a=camera_y+1
 			ptr_map_pf0_0=ptr_map_pf1_0=ptr_map_pf2_0=ptr_map_pf0_1=ptr_map_pf1_1=ptr_map_pf2_1=a
 
 		sync3
 			draw_map_frame
-			// a=flip 
-			// == { draw_map_frame }
-			// else { draw_sprites_frame }
 	} always
 }
