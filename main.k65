@@ -1,9 +1,11 @@
 var flip=0x80, key_press_counter, temp1
 var camera_y[2]=0x90, camera_y_offset, camera_y_cover
 var ptr_map_pf0_0[2]=0xA0, ptr_map_pf1_0[2], ptr_map_pf2_0[2], ptr_map_pf0_1[2], ptr_map_pf1_1[2], ptr_map_pf2_1[2]
+var player_x=0xB0, player_y
 
 // CONSTANTS
 [CAMERA_Y_LIMIT=231]
+[SPRITE_HEIGHT=8]
 
 inline draw_map_x_scanlines { 
 	{
@@ -22,18 +24,21 @@ inline draw_map_x_scanlines {
 }
 
 inline draw_map_frame {
+	// top border
 	cpf=a=0x0 y=8 
 	!= {
-		{ 
+		{
 			wsync y--
 		} !=
 	}
 
+	// first row of map is trimmed by camera movement
 	y=23 cpf=a=0x80 
 	x=camera_y_offset != {
 		draw_map_x_scanlines 
 	}
 
+	// drawing rest of map
 	y-- 
 	{
 		x=8 
@@ -41,16 +46,18 @@ inline draw_map_frame {
 		y--
 	} !=
 	
+	// last row of map is trimmed by camera movement
 	x=camera_y_cover != { 
 		draw_map_x_scanlines
 	}
 	
-	wsync pf0=pf1=pf2=a=0 cpf=a=0x0 
+	wsync 
+	pf0=pf1=pf2=a=0 cpf=a=0x0 
+	gp0=a=0 cp0=a=1
 }
 
 main {
 	init
-
 	ctpf=a=1
 	
 	ptr_map_pf0_0+1=a=&>map1_pf0_0
@@ -62,9 +69,6 @@ main {
 
 	{
 		sync1
-			cpf=pf0=pf1=pf2=a=0
-			a=flip a^0x01 flip=a
-
 			// handle input
 			a=swcha a&0x10 == {
 				a=camera_y+1 a?CAMERA_Y_LIMIT < { c- a=camera_y a+0x20 camera_y=a a=camera_y+1 a+0 camera_y+1=a }
@@ -86,6 +90,8 @@ main {
 			a=camera_y+1
 			ptr_map_pf0_0=ptr_map_pf1_0=ptr_map_pf2_0=ptr_map_pf0_1=ptr_map_pf1_1=ptr_map_pf2_1=a
 
+			// sprite positioning
+			a=player_x c- a+1 x=0 SetHorizPos player_x=a
 		sync3
 			draw_map_frame
 	} always
