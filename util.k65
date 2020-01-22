@@ -4,3 +4,7 @@ inline SetHorizPos {
 	a^0x07 a<< a<< a<< a<<
 	rp0,x=a hp0,x=a
 }
+
+inline ComputeU2 {
+	a^0xff c- a+1
+}

@@ -1,12 +1,10 @@
-var flip=0x80, key_press_counter, temp1
+var flip=0x80, key_press_counter, temp1, temp2, temp3, temp4
 var camera_y[2]=0x90, camera_y_offset, camera_y_cover
 var ptr_map_pf0_0[2]=0xA0, ptr_map_pf1_0[2], ptr_map_pf2_0[2], ptr_map_pf0_1[2], ptr_map_pf1_1[2], ptr_map_pf2_1[2]
-var player_x=0xB0, player_y
+var player_pos_x=0xB0, player_pos_y, player_speed_x, player_speed_y, player_state
 
 // CONSTANTS
 [CAMERA_Y_LIMIT=231]
-[SPRITE_HEIGHT=16]
-
 inline draw_map_x_scanlines { 
 	{
 		wsync
@@ -58,7 +56,7 @@ func draw_map_frame {
 
 func draw_sprite_frame {
 	pf0=a=0x10 cpf=a=0 cp0=a=0x50
-	a=player_y c+ a-SPRITE_HEIGHT temp1=a
+	a=player_pos_y c+ a-SPRITE_HEIGHT temp1=a
 	y=9
 	!= {
 		{
@@ -68,7 +66,7 @@ func draw_sprite_frame {
 	cbg=a=0x89
 	y=[23*8]
 	{
-		y?player_y == {
+		y?player_pos_y == {
 			gp0=a=0xff
 		}
 		y?temp1 == {
@@ -79,6 +77,50 @@ func draw_sprite_frame {
 	} !=
 	gp0=a=0 cbg=a=0 pf0=a=0
 }
+
+inline input {
+	// a=swcha a&0x10 == {
+	// 	a=player_pos_y a?PLAYER_BOXY_TOP == {
+	// 		a=camera_y+1 a?CAMERA_Y_LIMIT < { c- a=camera_y a+0x20 camera_y=a a=camera_y+1 a+0 camera_y+1=a }
+	// 	} 
+	// 	else { c- a+1 player_pos_y=a }
+	// }
+
+	// a=swcha a&0x20 == {
+	// 	a=player_pos_y a?PLAYER_BOXY_BOTTOM == {
+	// 		a=camera_y a&0xE0 == {
+	// 			a=camera_y+1 != {
+	// 				c+ a-1 camera_y+1=a
+	// 				camera_y=a=0xE0
+	// 			}
+	// 		}
+	// 		else { c+ a-0x20 camera_y=a }
+
+	// 	}
+	// 	else { c+ a-1 player_pos_y=a }
+	// }
+
+	[PLAYER_SPEED=1, GRAVITY=3]
+	a=swcha a&0x40 == {
+		player_dir=a=1 player_speed_x=a=PLAYER_SPEED
+	}
+	else {	
+		a=swcha a&0x80 == {
+			player_dir=a=0 player_speed_x=a=PLAYER_SPEED
+		}
+		else { player_speed_x=a=0 }
+	}
+}
+
+inline dynamic {
+	a=player_dir == {
+		c- a=player_pos_x a+player_speed_x player_pos_x=a
+	}
+	else {
+		c+ a=player_pos_x a-player_speed_x player_pos_x=a
+	}
+}
+
 
 main {
 	init
@@ -91,29 +133,18 @@ main {
 	ptr_map_pf1_1+1=a=&>map1_pf1_1
 	ptr_map_pf2_1+1=a=&>map1_pf2_1
 
-	player_y=a=80
+	player_pos_y=a=80
 	{
 		sync1
 			a=flip a^0x01 flip=a
-			// handle input
-			a=swcha a&0x10 == {
-				a=camera_y+1 a?CAMERA_Y_LIMIT < { c- a=camera_y a+0x20 camera_y=a a=camera_y+1 a+0 camera_y+1=a }
-			}
-
-			a=swcha a&0x20 == {
-				a=camera_y a&0xE0 == {
-					a=camera_y+1 != {
-						c+ a-1 camera_y+1=a
-						camera_y=a=0xE0
-					}
-				}
-				else { c+ a-0x20 camera_y=a }
-			}
+			UpdateHero
+			
+		sync2
+			// camera position
 			a=camera_y a>> a>> a>> a>> a>> camera_y_offset=a
 			a=8 c+ a-camera_y_offset camera_y_cover=a 
-		sync2
 			// sprite positioning
-			a=player_x c- a+1 player_x=a x=0 SetHorizPos wsync hmove=a
+			a=player_pos_x x=0 SetHorizPos wsync hmove=a
 			// set ptrs to camera movement
 			a=camera_y+1
 			ptr_map_pf0_0=ptr_map_pf1_0=ptr_map_pf2_0=ptr_map_pf0_1=ptr_map_pf1_1=ptr_map_pf2_1=a

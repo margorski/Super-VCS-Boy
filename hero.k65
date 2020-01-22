@@ -1,0 +1,241 @@
+[SPRITE_HEIGHT = 16, XACC=0x06, TORQUE=0x07, XACC_AIR=0x02, MAX_X=120, MAX_Y=200, GRAVITY=0x06, MIN_Y_SPEED=0x9C, JUMP_SPEED=0x60]
+[MIN_Y=0xAB]
+[PLAYER_BOXY_TOP=150]
+[PLAYER_BOXY_BOTTOM=40]
+[PLAYER_BOXX_LEFT=20]
+[PLAYER_BOXX_RIGHT=160]
+
+data PF0BitLookupTable {
+	0x10 
+	0x20
+	0x40
+	0x80
+}
+
+data PF1BitLookupTable {
+	0b10000000
+	0b01000000
+	0b00100000
+	0b00010000
+	0b00001000
+	0b00000100
+	0b00000010
+	0b00000001
+}
+
+data PF2BitLookupTable {
+	0b00000001
+	0b00000010
+	0b00000100
+	0b00001000
+	0b00010000
+	0b00100000
+	0b01000000
+	0b10000000
+}
+
+// X - posX >> >>
+// Y - (0xFF - posY + 3) >> >>
+inline CalculatePFPosition {
+	a=x a>> a>> x=a 
+	a=y c+ a-0xA2 a>> a>> y=a 
+}
+
+// x - pf_poxX, y - pf_posY
+inline CheckCollision {
+	/*
+	a=x
+	a?4 < { a=pf0_0,y a&PF0BitLookupTable,x}
+	else {
+		a?12 <{ a=x c+ a-4 x=a a=pf1_0,y a&PF1BitLookupTable,x}
+		else {
+			a?20 <{ a=x c+ a-12 x=a a=pf2_0,y a&PF2BitLookupTable,x }
+			else { 
+				a?24 <{ a=x c+ a-20 x=a a=pf0_1,y a&PF0BitLookupTable,x }
+				else {
+					a?32 <{ a=x c+ a-24 x=a a=pf1_1,y a&PF1BitLookupTable,x }
+					else { a=x c+ a-32 x=a a=pf2_1,y a&PF2BitLookupTable,x }
+				}
+			}
+		}
+	}*/
+}
+
+inline CheckCollisionLeft {
+	x=player_pos_x y=player_pos_y CalculatePFPosition
+
+.checkLeftCollisionLoop:
+	CheckCollision
+	== {
+		x=player_pos_x a=player_pos_y c- a+4 y=a CalculatePFPosition
+		CheckCollision
+		== {
+			x=player_pos_x a=player_pos_y c- a+8 y=a CalculatePFPosition
+			CheckCollision
+		}
+	}
+	!= { 
+		player_speed_x=a=0 
+		x=player_pos_x x++ player_pos_x=x y=player_pos_y
+		CalculatePFPosition
+		goto .checkLeftCollisionLoop
+	}	
+}
+
+// a- player_pos_x
+inline CheckCollisionRight {
+	a=player_pos_x c- a+8 temp2=a
+	x=temp2 y=player_pos_y CalculatePFPosition
+	
+.checkRightCollisionLoop:
+	CheckCollision
+	== {
+		x=temp2 a=player_pos_y c- a+4 y=a CalculatePFPosition
+		CheckCollision
+		== {
+			x=temp2 a=player_pos_y c- a+8 y=a CalculatePFPosition
+			CheckCollision
+		}
+	}	
+
+	!= { 
+		player_speed_x=a=0 
+		a=player_pos_x c+ a-1 player_pos_x=a
+		c- a+8 temp2=a
+		x=temp2 y=player_pos_y
+		CalculatePFPosition
+		goto .checkRightCollisionLoop
+	}
+}
+
+inline CheckCollisionTop {
+	x=player_pos_x y=player_pos_y CalculatePFPosition
+	
+.checkTopCollisionLoop:
+	CheckCollision
+	== {
+		a=player_pos_x c- a+4 x=a y=player_pos_y CalculatePFPosition
+		CheckCollision
+		== {
+			a=player_pos_x c- a+8 x=a y=player_pos_y CalculatePFPosition
+			CheckCollision
+		}
+	}
+	
+	!= { 
+		player_speed_y=a=0 player_state=a
+		x=player_pos_x y=player_pos_y y-- player_pos_y=y CalculatePFPosition
+		CalculatePFPosition
+		goto .checkTopCollisionLoop
+	}
+}
+
+// a - player_pos_y
+inline CheckCollisionBottom {
+	a=player_pos_y c+ a-8 temp2=a
+	x=player_pos_x y=temp2 CalculatePFPosition
+
+.checkBottomCollisionLoop:
+	CheckCollision
+	== {
+		a=player_pos_x c- a+4 x=a y=temp2 CalculatePFPosition
+		CheckCollision
+		== {
+			a=player_pos_x c- a+8 x=a y=temp2 CalculatePFPosition
+			CheckCollision
+		}
+	}
+
+	!= { 
+		player_speed_y=a=0 player_state=a
+		a=player_pos_y c- a+1 player_pos_y=a
+		c+ a-8 temp2=a
+		x=player_pos_x y=temp2 
+		CalculatePFPosition
+		goto .checkBottomCollisionLoop
+	}
+}
+
+inline MoveJoystick {
+	// down
+	//a=0b00100000 a&?swcha == { x-- }	
+	// up
+	//a=0b00010000 a&?swcha == { x?254 <{ x++ }}	
+	// leftv
+
+	x=player_speed_x
+	a=player_state <0 { temp2=a=XACC_AIR }
+	else { temp2=a=XACC }
+	//left 
+	a=0b01000000 a&?swcha == {
+		a=x c+ o- a-temp2 <<= {a=0x81}
+	}	
+	else { 
+		a=0b10000000 a&?swcha == { 
+			a=x c- o- a+temp2 <<= { a=0x7F }
+		}
+		else {
+			a=x == { return }
+			<0 {
+				c- o- a+TORQUE <<= {a=0}
+			}
+			else {
+				c+ o- a-TORQUE <<= {a=0}
+			}
+		}
+	} 
+	player_speed_x=a
+
+	a&?inpt4 >=0 { 
+		a=player_state >=0 { a|0x80 player_state=a player_speed_y=a=JUMP_SPEED } 
+	}
+}
+
+inline UpdateHorizontal {
+	a=player_speed_x
+	== { 
+		return
+	}
+	a&0x80 <0 {
+		a=player_speed_x ComputeU2 a>> a>> a>> a>> a>>
+		temp2=a a=player_pos_x
+		c+ a-temp2 player_pos_x=a 
+		//CheckCollisionLeft
+	}
+	else {
+		a=player_speed_x a>> a>> a>> a>> a>>
+		c- a+player_pos_x player_pos_x=a 
+		//CheckCollisionRight
+	}
+}
+
+inline ApplyGravity {
+	a=player_speed_y
+	c+ a-GRAVITY 
+	<0 { 
+		a?MIN_Y_SPEED <0 { a=MIN_Y_SPEED } 
+	}
+	player_speed_y=a
+}
+
+inline UpdateVertical {
+	a=player_speed_y
+	a&0x80 <0 {
+		a=player_speed_y ComputeU2 a>> a>> a>> a>> a>>
+		temp2=a a=player_pos_y 
+		c+ a-temp2 player_pos_y=a 
+		//CheckCollisionBottom
+	}
+	else {
+		a=player_speed_y a>> a>> a>> a>> a>>
+		c- a+player_pos_y player_pos_y=a 
+		//CheckCollisionTop
+	}
+}
+
+inline UpdateHero {
+	ApplyGravity
+	MoveJoystick
+	UpdateVertical
+	UpdateHorizontal
+}
