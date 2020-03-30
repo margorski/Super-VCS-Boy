@@ -1,5 +1,12 @@
+STELLABIN=${K65_PATH}\bin\Stella.exe
+K65=${K65_PATH}\bin\k65.exe
+FilesList=files.lst
 
-all:
-	..\k65-sdk\bin\k65 @files.lst
+all:  main run
+
+main: 
+	$(K65) @$(FilesList)
 	_makeprops.bat
-	..\k65-sdk\bin\Stella.exe -propsfile props.cfg supervcsboy.bin
+	
+run:
+	$(STELLABIN) -propsfile props.cfg bin\supervcsboy.bin

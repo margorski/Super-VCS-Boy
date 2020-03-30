@@ -6,4 +6,4 @@ maps.k65            core
 hero.k65            core
 main.k65			core
 
--o supervcsboy.bin
+-o bin\supervcsboy.bin
