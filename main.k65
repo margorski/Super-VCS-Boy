@@ -1,8 +1,7 @@
-var temp1=0x80, temp2, temp3, temp4, temp5, temp6, line1, line2,flip
+var temp1=0x80, temp2, temp3, temp4, temp5, temp6,flip
 var camera_y[2]=0x90, camera_y_offset, camera_y_cover
 var ptr_map_pf0_0[2]=0xA0, ptr_map_pf1_0[2], ptr_map_pf2_0[2], ptr_map_pf0_1[2], ptr_map_pf1_1[2], ptr_map_pf2_1[2]
-var player_x=0xB0, player_y, player_y_max, draw_spr
-
+var player_x=0xB0, player_y, player_y_max
 data sprite {
 	0xff 0xff 0xff 0xff 0xff 0xff 0xff 0xff 0 0 0 0 0 0 0 0
 }
@@ -15,29 +14,32 @@ inline draw_map_x_scanlines {
 	nocross {
 		{
 			wsync
-			a=flip a^0xff flip=a == {
-				pf0=a=(ptr_map_pf0_0),y
-				pf1=a=(ptr_map_pf1_0),y
-				pf2=a=(ptr_map_pf2_0),y
-				pf1=a=(ptr_map_pf1_1),y
-				pf2=a=(ptr_map_pf2_1),y
-				pf0=a=(ptr_map_pf0_1),y
-			}
-			else {
-				pf0=pf1=pf2=a=0 
-				a=[SPRITE_HEIGHT] a?--line1 <{ gp0=a=0 } else { gp0=a=0xff }
-
-
-			}
+			pf0=a=(ptr_map_pf0_0),y
+			pf1=a=(ptr_map_pf1_0),y
+			pf2=a=(ptr_map_pf2_0),y
+			*8
+			pf1=a=(ptr_map_pf1_1),y
+			pf2=a=(ptr_map_pf2_1),y
+			pf0=a=(ptr_map_pf0_1),y
 
 			x--
 		} !=
 	}
 }
 
-inline draw_map_frame {
+func draw_sprites {
+	// x=50
+	// {
+	// 	wsync
+	// 	pf0=pf1=pf2=a=0 
+	// 	a=[SPRITE_HEIGHT] a?--line1 <{ gp0=a=0 } else { gp0=a=0xff }	
+	// 	x--
+//	} !=
+}
+
+func draw_map_frame {
 	// top border
-	gp0=cpf=draw_spr=a=0x0 y=8 line1=a=player_y line2=a=player_y_max
+	cpf=a=0x0 y=8
 	!= {
 		{
 			wsync y--
@@ -154,6 +156,11 @@ main {
 			a=player_x x=0 SetHorizPos wsync hmove=a
 			a=player_y c- a+[SPRITE_HEIGHT] player_y_max=a
 		sync3
-			draw_map_frame
+			a=flip a^0xff flip=a == {
+				draw_map_frame
+			}
+			else {
+				draw_sprites
+			}
 	} always
 }
