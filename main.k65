@@ -28,13 +28,25 @@ inline draw_map_x_scanlines {
 }
 
 func draw_sprites {
-	// x=50
-	// {
-	// 	wsync
-	// 	pf0=pf1=pf2=a=0 
-	// 	a=[SPRITE_HEIGHT] a?--line1 <{ gp0=a=0 } else { gp0=a=0xff }	
-	// 	x--
-//	} !=
+
+	// gp0=cpf=draw_spr=a=0x0 y=8 line1=a=player_y line2=a=player_y_max
+
+	// a=[SPRITE_HEIGHT] a?--line1 <{ gp0=a=0 } else { gp0=a=0xff }
+
+
+	gp0=a=0
+
+	y=player_y {
+		wsync
+		y--
+	} !=
+	
+	y=SPRITE_HEIGHT {
+		y--
+		wsync
+		gp0=a=sprite,y
+	} !=
+	gp0=a=0x0
 }
 
 func draw_map_frame {
@@ -88,7 +100,7 @@ inline handle_camera_movement {
 }
 
 [PLAYER_Y_TOP_CLAMP=20]
-[PLAYER_Y_BOTTOM_CLAMP=80]
+[PLAYER_Y_BOTTOM_CLAMP=160]
 [PLAYER_X_LEFT_CLAMP=4]
 [PLAYER_X_RIGHT_CLAMP=148]
 inline handle_player_movement {
