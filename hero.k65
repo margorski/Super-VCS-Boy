@@ -1,15 +1,12 @@
-[SPRITE_HEIGHT = 16, XACC=0x06, TORQUE=0x07, XACC_AIR=0x02, MAX_X=120, MAX_Y=200, GRAVITY=0x06, MIN_Y_SPEED=0x9C, JUMP_SPEED=0x60]
-[MIN_Y=0xAB]
-[PLAYER_BOXY_TOP=150]
-[PLAYER_BOXY_BOTTOM=40]
-[PLAYER_BOXX_LEFT=20]
-[PLAYER_BOXX_RIGHT=160]
+[X_ACC=0x0F, X_ACC_AIR=0x0A, X_TORQUE=0x0F] // X DYNAMICS
+[Y_GRAVITY=0x06, Y_MAX_SPEED=0x7C, Y_JUMP_SPEED=0xA0, Y_MAX=216] // Y DYNAMICS
+
 
 data PF0BitLookupTable {
-	0x10 
-	0x20
-	0x40
-	0x80
+	0b00010000 
+	0b00100000 
+	0b01000000
+	0b10000000
 }
 
 data PF1BitLookupTable {
@@ -34,161 +31,92 @@ data PF2BitLookupTable {
 	0b10000000
 }
 
-// X - posX >> >>
-// Y - (0xFF - posY + 3) >> >>
-inline CalculatePFPosition {
-	a=x a>> a>> x=a 
-	a=y c+ a-0xA2 a>> a>> y=a 
+data PF0BitLookupTableR {
+	0b10000000 
+	0b01000000 
+	0b00100000
+	0b00010000
 }
 
-// x - pf_poxX, y - pf_posY
-inline CheckCollision {
-	/*
-	a=x
-	a?4 < { a=pf0_0,y a&PF0BitLookupTable,x}
-	else {
-		a?12 <{ a=x c+ a-4 x=a a=pf1_0,y a&PF1BitLookupTable,x}
-		else {
-			a?20 <{ a=x c+ a-12 x=a a=pf2_0,y a&PF2BitLookupTable,x }
-			else { 
-				a?24 <{ a=x c+ a-20 x=a a=pf0_1,y a&PF0BitLookupTable,x }
-				else {
-					a?32 <{ a=x c+ a-24 x=a a=pf1_1,y a&PF1BitLookupTable,x }
-					else { a=x c+ a-32 x=a a=pf2_1,y a&PF2BitLookupTable,x }
-				}
-			}
-		}
-	}*/
-}
-
-inline CheckCollisionLeft {
-	x=player_pos_x y=player_pos_y CalculatePFPosition
-
-.checkLeftCollisionLoop:
-	CheckCollision
-	== {
-		x=player_pos_x a=player_pos_y c- a+4 y=a CalculatePFPosition
-		CheckCollision
-		== {
-			x=player_pos_x a=player_pos_y c- a+8 y=a CalculatePFPosition
-			CheckCollision
-		}
-	}
-	!= { 
-		player_speed_x=a=0 
-		x=player_pos_x x++ player_pos_x=x y=player_pos_y
-		CalculatePFPosition
-		goto .checkLeftCollisionLoop
-	}	
-}
-
-// a- player_pos_x
-inline CheckCollisionRight {
-	a=player_pos_x c- a+8 temp2=a
-	x=temp2 y=player_pos_y CalculatePFPosition
-	
-.checkRightCollisionLoop:
-	CheckCollision
-	== {
-		x=temp2 a=player_pos_y c- a+4 y=a CalculatePFPosition
-		CheckCollision
-		== {
-			x=temp2 a=player_pos_y c- a+8 y=a CalculatePFPosition
-			CheckCollision
-		}
-	}	
-
-	!= { 
-		player_speed_x=a=0 
-		a=player_pos_x c+ a-1 player_pos_x=a
-		c- a+8 temp2=a
-		x=temp2 y=player_pos_y
-		CalculatePFPosition
-		goto .checkRightCollisionLoop
-	}
-}
-
-inline CheckCollisionTop {
-	x=player_pos_x y=player_pos_y CalculatePFPosition
-	
-.checkTopCollisionLoop:
-	CheckCollision
-	== {
-		a=player_pos_x c- a+4 x=a y=player_pos_y CalculatePFPosition
-		CheckCollision
-		== {
-			a=player_pos_x c- a+8 x=a y=player_pos_y CalculatePFPosition
-			CheckCollision
-		}
-	}
-	
-	!= { 
-		player_speed_y=a=0 player_state=a
-		x=player_pos_x y=player_pos_y y-- player_pos_y=y CalculatePFPosition
-		CalculatePFPosition
-		goto .checkTopCollisionLoop
-	}
-}
-
-// a - player_pos_y
-inline CheckCollisionBottom {
-	a=player_pos_y c+ a-8 temp2=a
-	x=player_pos_x y=temp2 CalculatePFPosition
-
-.checkBottomCollisionLoop:
-	CheckCollision
-	== {
-		a=player_pos_x c- a+4 x=a y=temp2 CalculatePFPosition
-		CheckCollision
-		== {
-			a=player_pos_x c- a+8 x=a y=temp2 CalculatePFPosition
-			CheckCollision
-		}
-	}
-
-	!= { 
-		player_speed_y=a=0 player_state=a
-		a=player_pos_y c- a+1 player_pos_y=a
-		c+ a-8 temp2=a
-		x=player_pos_x y=temp2 
-		CalculatePFPosition
-		goto .checkBottomCollisionLoop
-	}
-}
-
-inline MoveJoystick {
-	// down
-	//a=0b00100000 a&?swcha == { x-- }	
-	// up
-	//a=0b00010000 a&?swcha == { x?254 <{ x++ }}	
-	// leftv
-
+inline HandleInput {
 	x=player_speed_x
-	a=player_state <0 { temp2=a=XACC_AIR }
-	else { temp2=a=XACC }
+	a=player_state <0 { temp2=a=X_ACC_AIR }
+	else { temp2=a=X_ACC }
 	//left 
 	a=0b01000000 a&?swcha == {
-		a=x c+ o- a-temp2 <<= {a=0x81}
+		a=x >=0 { a=0 } c+ o- a-temp2 <<= {a=0x81}
 	}	
 	else { 
 		a=0b10000000 a&?swcha == { 
-			a=x c- o- a+temp2 <<= { a=0x7F }
+			a=x <0 { a=0 } c- o- a+temp2 <<= { a=0x7F }
 		}
 		else {
-			a=x == { return }
-			<0 {
-				c- o- a+TORQUE <<= {a=0}
-			}
-			else {
-				c+ o- a-TORQUE <<= {a=0}
+			a=x != {
+				<0 {
+					c- o- a+X_TORQUE <<= {a=0}
+				}
+				else {
+					c+ o- a-X_TORQUE <<= {a=0}
+				}
 			}
 		}
 	} 
 	player_speed_x=a
 
 	a&?inpt4 >=0 { 
-		a=player_state >=0 { a|0x80 player_state=a player_speed_y=a=JUMP_SPEED } 
+		a=player_state >=0 { a|0x80 player_state=a player_speed_y=a=Y_JUMP_SPEED } 
 	}
+}
+
+func CheckCollision {
+	// X - posX >> >>
+	// Y - (0xFF - posY + 3) >> >>
+	// Calculate playfield position
+	a=x a>> a>> x=a 
+
+	// TODO: LICZENIE Y
+	a=y c+ a-0xA2 a>> a>> y=a 
+
+	
+	// PRZESRANE:
+	// AKTUALNE KOLIZJE SPRAWDZAJA (CHYBA) TYLKO PUNKT X, Y
+	// TRZEBA TO ZROBIC DLA 2 SKRAJNYCH PUNKTOW
+	// PRZY RUCHU W LEWO, LEWO GORA - LEWO DOL
+	// W PRAWO PRAWO GORA - PRAWO DOL
+	// W GORE GORA LEWO - GORA PRAWO
+	// W DOL DOL LEWO - DOL PRAWO
+
+	// ZLE SPRAWDZA KOLIZJE, DLACZEGO?
+
+	a=x
+	// DA SIE ZMIENIC NA ARYTMETYKE I LOOKUPTABLE ?
+	a?4 < { a=(ptr_map_pf0_0),y a&PF0BitLookupTable,x}
+	else { 
+		a?12 <{ a=x c+ a-4 x=a a=(ptr_map_pf1_0),y a&PF1BitLookupTable,x}
+		else {
+			a?20 <{ a=x c+ a-12 x=a a=(ptr_map_pf2_0),y a&PF2BitLookupTable,x }
+			else {
+	 			a?28 <{ a=x c+ a-20 x=a a=(ptr_map_pf2_1),y a&PF1BitLookupTable,x }
+				else {
+					a?36 <{ a=x c+ a-28 x=a a=(ptr_map_pf1_1),y a&PF2BitLookupTable,x }
+					else { a=x c+ a-36 x=a a=(ptr_map_pf0_1),y a&PF0BitLookupTableR,x }	
+				}
+			}
+		}
+	}
+	// else {
+	// 	a?12 <{ a=x c+ a-4 x=a a=(ptr_map_pf1_0),y a&PF1BitLookupTable,x}
+	// 	else {
+	// 		a?20 <{ a=x c+ a-12 x=a a=(ptr_map_pf2_0),y a&PF2BitLookupTable,x }
+	// 		else { 
+	// 			a?24 <{ a=x c+ a-20 x=a a=(ptr_map_pf0_1),y a&PF0BitLookupTable,x }
+	// 			else {
+	// 				a?32 <{ a=x c+ a-24 x=a a=(ptr_map_pf1_1),y a&PF1BitLookupTable,x }
+	// 				else { a=x c+ a-32 x=a a=(ptr_map_pf2_1),y a&PF2BitLookupTable,x }
+	// 			}
+	// 		}
+	// 	}
+	// }
 }
 
 inline UpdateHorizontal {
@@ -198,23 +126,43 @@ inline UpdateHorizontal {
 	}
 	a&0x80 <0 {
 		a=player_speed_x ComputeU2 a>> a>> a>> a>> a>>
-		temp2=a a=player_pos_x
-		c+ a-temp2 player_pos_x=a 
-		//CheckCollisionLeft
+		temp2=a a=player_x
+		c+ a-temp2 player_x=a 
+		x=a// }
 	}
 	else {
 		a=player_speed_x a>> a>> a>> a>> a>>
-		c- a+player_pos_x player_pos_x=a 
-		//CheckCollisionRight
+		c- a+player_x player_x=a 
+		// 7 PLAYER WIDTH - TO CONSTANT
+		c- a+7 x=a
+	}
+
+	y=a=player_y		
+	CheckCollision
+	!= {
+		a=player_speed_x a&0x80 <0 {
+			// collision from right
+			a=player_x c- a+4 a&0b11111100 player_x=a
+		}
+		else {
+			// collision from left
+			a=player_x a&0b11111100 player_x=a
+		}
 	}
 }
 
 inline ApplyGravity {
 	a=player_speed_y
-	c+ a-GRAVITY 
-	<0 { 
-		a?MIN_Y_SPEED <0 { a=MIN_Y_SPEED } 
+	c- a+Y_GRAVITY 
+	// TODO: Problem ze skokiem, zbadać waruenk
+	
+	<<= {
+		<0 { a=Y_MAX_SPEED }
 	}
+
+	// <<={ 
+	// 	<0 { a=Y_MAX_SPEED } 
+	// }
 	player_speed_y=a
 }
 
@@ -222,20 +170,29 @@ inline UpdateVertical {
 	a=player_speed_y
 	a&0x80 <0 {
 		a=player_speed_y ComputeU2 a>> a>> a>> a>> a>>
-		temp2=a a=player_pos_y 
-		c+ a-temp2 player_pos_y=a 
-		//CheckCollisionBottom
+		temp2=a a=player_y 
+		c+ a-temp2 player_y=a
 	}
 	else {
 		a=player_speed_y a>> a>> a>> a>> a>>
-		c- a+player_pos_y player_pos_y=a 
+		c- a+player_y player_y=a 
+		
+		a?Y_MAX < {
+			player_y=a 
+		}
+		else {
+			player_y=a=Y_MAX a=player_state a&0x7F player_state=a player_speed_y=a=0
+		}
 		//CheckCollisionTop
 	}
 }
 
-inline UpdateHero {
+func HeroUpdate1 {
+	HandleInput
 	ApplyGravity
-	MoveJoystick
+}
+
+func HeroUpdate2 {	
 	UpdateVertical
 	UpdateHorizontal
 }

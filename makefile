@@ -9,4 +9,4 @@ main:
 	_makeprops.bat
 	
 run:
-	$(STELLABIN) -propsfile props.cfg bin\supervcsboy.bin
+	$(STELLABIN) -tv.phosphor always -propsfile props.cfg bin\supervcsboy.bin

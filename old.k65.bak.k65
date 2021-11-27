@@ -1,0 +1,158 @@
+
+[PLAYER_BOXY_TOP=150]
+[PLAYER_BOXY_BOTTOM=20]
+[PLAYER_BOXX_LEFT=20]
+[PLAYER_BOXX_RIGHT=160]
+[MIN_Y=0xAB]
+
+data PF0BitLookupTable {
+	0x10 
+	0x20
+	0x40
+	0x80
+}
+
+data PF1BitLookupTable {
+	0b10000000
+	0b01000000
+	0b00100000
+	0b00010000
+	0b00001000
+	0b00000100
+	0b00000010
+	0b00000001
+}
+
+data PF2BitLookupTable {
+	0b00000001
+	0b00000010
+	0b00000100
+	0b00001000
+	0b00010000
+	0b00100000
+	0b01000000
+	0b10000000
+}
+
+// X - posX >> >>
+// Y - (0xFF - posY + 3) >> >>
+inline CalculatePFPosition {
+	a=x a>> a>> x=a 
+	a=y c+ a-0xA2 a>> a>> y=a 
+}
+
+// x - pf_poxX, y - pf_posY
+inline CheckCollision {
+	/*
+	a=x
+	a?4 < { a=pf0_0,y a&PF0BitLookupTable,x}
+	else {
+		a?12 <{ a=x c+ a-4 x=a a=pf1_0,y a&PF1BitLookupTable,x}
+		else {
+			a?20 <{ a=x c+ a-12 x=a a=pf2_0,y a&PF2BitLookupTable,x }
+			else { 
+				a?24 <{ a=x c+ a-20 x=a a=pf0_1,y a&PF0BitLookupTable,x }
+				else {
+					a?32 <{ a=x c+ a-24 x=a a=pf1_1,y a&PF1BitLookupTable,x }
+					else { a=x c+ a-32 x=a a=pf2_1,y a&PF2BitLookupTable,x }
+				}
+			}
+		}
+	}*/
+}
+
+// inline CheckCollisionLeft {
+// 	x=player_x y=player_y CalculatePFPosition
+
+// .checkLeftCollisionLoop:
+// 	CheckCollision
+// 	== {
+// 		x=player_x a=player_y c- a+4 y=a CalculatePFPosition
+// 		CheckCollision
+// 		== {
+// 			x=player_x a=player_y c- a+8 y=a CalculatePFPosition
+// 			CheckCollision
+// 		}
+// 	}
+// 	!= { 
+// 		player_speed_x=a=0 
+// 		x=player_x x++ player_x=x y=player_y
+// 		CalculatePFPosition
+// 		goto .checkLeftCollisionLoop
+// 	}	
+// }
+
+// // a- player_x
+// inline CheckCollisionRight {
+// 	a=player_x c- a+8 temp2=a
+// 	x=temp2 y=player_y CalculatePFPosition
+	
+// .checkRightCollisionLoop:
+// 	CheckCollision
+// 	== {
+// 		x=temp2 a=player_y c- a+4 y=a CalculatePFPosition
+// 		CheckCollision
+// 		== {
+// 			x=temp2 a=player_y c- a+8 y=a CalculatePFPosition
+// 			CheckCollision
+// 		}
+// 	}	
+
+// 	!= { 
+// 		player_speed_x=a=0 
+// 		a=player_x c+ a-1 player_x=a
+// 		c- a+8 temp2=a
+// 		x=temp2 y=player_y
+// 		CalculatePFPosition
+// 		goto .checkRightCollisionLoop
+// 	}
+// }
+
+// inline CheckCollisionTop {
+// 	x=player_x y=player_y CalculatePFPosition
+	
+// .checkTopCollisionLoop:
+// 	CheckCollision
+// 	== {
+// 		a=player_x c- a+4 x=a y=player_y CalculatePFPosition
+// 		CheckCollision
+// 		== {
+// 			a=player_x c- a+8 x=a y=player_y CalculatePFPosition
+// 			CheckCollision
+// 		}
+// 	}
+	
+// 	!= { 
+// 		player_speed_y=a=0 player_state=a
+// 		x=player_x y=player_y y-- player_y=y CalculatePFPosition
+// 		CalculatePFPosition
+// 		goto .checkTopCollisionLoop
+// 	}
+// }
+
+// // a - player_y
+inline CheckCollisionBottom {
+
+// 	a=player_y c+ a-8 temp2=a
+// 	x=player_x y=temp2 CalculatePFPosition
+
+// .checkBottomCollisionLoop:
+// 	CheckCollision
+// 	== {
+// 		a=player_x c- a+4 x=a y=temp2 CalculatePFPosition
+// 		CheckCollision
+// 		== {
+// 			a=player_x c- a+8 x=a y=temp2 CalculatePFPosition
+// 			CheckCollision
+// 		}
+// 	}
+
+// 	!= { 
+// 		player_speed_y=a=0 player_state=a
+// 		a=player_y c- a+1 player_y=a
+// 		c+ a-8 temp2=a
+// 		x=player_x y=temp2 
+// 		CalculatePFPosition
+// 		goto .checkBottomCollisionLoop
+	// }
+}

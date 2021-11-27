@@ -1,7 +1,8 @@
 var temp1=0x80, temp2, temp3, temp4, temp5, temp6,flip
 var camera_y[2]=0x90, camera_y_offset, camera_y_cover
 var ptr_map_pf0_0[2]=0xA0, ptr_map_pf1_0[2], ptr_map_pf2_0[2], ptr_map_pf0_1[2], ptr_map_pf1_1[2], ptr_map_pf2_1[2]
-var player_x=0xB0, player_y, player_y_max
+var player_x=0xB0, player_y, player_y_max, player_speed_y, player_speed_x, player_state
+
 data sprite {
 	0xff 0xff 0xff 0xff 0xff 0xff 0xff 0xff 0 0 0 0 0 0 0 0
 }
@@ -27,6 +28,7 @@ inline draw_map_x_scanlines {
 	}
 }
 
+[SCANLINES=228]
 func draw_sprites {
 
 	// gp0=cpf=draw_spr=a=0x0 y=8 line1=a=player_y line2=a=player_y_max
@@ -36,7 +38,8 @@ func draw_sprites {
 
 	gp0=a=0
 
-	y=player_y {
+	y=a=player_y
+	{
 		wsync
 		y--
 	} !=
@@ -51,7 +54,7 @@ func draw_sprites {
 
 func draw_map_frame {
 	// top border
-	cpf=a=0x0 y=8
+	cpf=a=0x0 y=6
 	!= {
 		{
 			wsync y--
@@ -67,7 +70,7 @@ func draw_map_frame {
 	
 	// drawing rest of map
 	{
-		x=8
+		x=10
 		draw_map_x_scanlines
 		y--
 	} !=
@@ -103,42 +106,42 @@ inline handle_camera_movement {
 [PLAYER_Y_BOTTOM_CLAMP=160]
 [PLAYER_X_LEFT_CLAMP=4]
 [PLAYER_X_RIGHT_CLAMP=148]
-inline handle_player_movement {
-	a=swcha a&0x10 == {
-		a=player_y c+ a-1 a?[PLAYER_Y_TOP_CLAMP] < { 
-			player_y=a=[PLAYER_Y_TOP_CLAMP] 
-			a=camera_y+1 a?CAMERA_Y_LIMIT < { c- a=camera_y a+0x20 camera_y=a a=camera_y+1 a+0 camera_y+1=a }
-		}
-		else {
-			player_y=a
-		}
-	}
+// inline handle_player_movement {
+// 	a=swcha a&0x10 == {
+// 		a=player_y c+ a-1 a?[PLAYER_Y_TOP_CLAMP] < { 
+// 			player_y=a=[PLAYER_Y_TOP_CLAMP] 
+// 			a=camera_y+1 a?CAMERA_Y_LIMIT < { c- a=camera_y a+0x20 camera_y=a a=camera_y+1 a+0 camera_y+1=a }
+// 		}
+// 		else {
+// 			player_y=a
+// 		}
+// 	}
 
-	a=swcha a&0x20 == {
-		a=player_y c- a+1 a?[PLAYER_Y_BOTTOM_CLAMP] >= {
-			player_y=a=[PLAYER_Y_BOTTOM_CLAMP]
-			a=camera_y a&0xE0 == {
-				a=camera_y+1 != {
-					c+ a-1 camera_y+1=a
-					camera_y=a=0xE0
-				}
-			}
-			else { c+ a-0x20 camera_y=a }
-		}
-		player_y++
-	}
-	a=camera_y a>> a>> a>> a>> a>> camera_y_offset=a
-	a=8 c+ a-camera_y_offset camera_y_cover=a
+// 	a=swcha a&0x20 == {
+// 		a=player_y c- a+1 a?[PLAYER_Y_BOTTOM_CLAMP] >= {
+// 			player_y=a=[PLAYER_Y_BOTTOM_CLAMP]
+// 			a=camera_y a&0xE0 == {
+// 				a=camera_y+1 != {
+// 					c+ a-1 camera_y+1=a
+// 					camera_y=a=0xE0
+// 				}
+// 			}
+// 			else { c+ a-0x20 camera_y=a }
+// 		}
+// 		player_y++
+// 	}
+// 	a=camera_y a>> a>> a>> a>> a>> camera_y_offset=a
+// 	a=8 c+ a-camera_y_offset camera_y_cover=a
 
-	a=swcha a&0x40 == {
-		a=player_x c+ a-1 a?[PLAYER_X_LEFT_CLAMP] <{ a=[PLAYER_X_LEFT_CLAMP] } player_x=a
-	}
-	else {	
-		a=swcha a&0x80 == {
-			a=player_x c- a+1 a?[PLAYER_X_RIGHT_CLAMP] >= { a=[PLAYER_X_RIGHT_CLAMP] } player_x=a
-		}
-	}
-}
+// 	a=swcha a&0x40 == {
+// 		a=player_x c+ a-1 a?[PLAYER_X_LEFT_CLAMP] <{ a=[PLAYER_X_LEFT_CLAMP] } player_x=a
+// 	}
+// 	else {	
+// 		a=swcha a&0x80 == {
+// 			a=player_x c- a+1 a?[PLAYER_X_RIGHT_CLAMP] >= { a=[PLAYER_X_RIGHT_CLAMP] } player_x=a
+// 		}
+// 	}
+// }
 
 
 inline set_map_ptr {
@@ -153,26 +156,51 @@ inline set_map_ptr {
 main {
 	init
 	ctpf=a=1
-	player_y=player_x=a=50
+	player_y=a=130
+	player_x=a=120
 	cp0=a=0x6A
 	set_map_ptr
 	{
 		sync1
-			//handle_camera_movement
-			handle_player_movement
-		sync2
-			// set ptrs to camera movement
-			a=camera_y+1
-			ptr_map_pf0_0=ptr_map_pf1_0=ptr_map_pf2_0=ptr_map_pf0_1=ptr_map_pf1_1=ptr_map_pf2_1=a
-			// sprite positioning
-			a=player_x x=0 SetHorizPos wsync hmove=a
-			a=player_y c- a+[SPRITE_HEIGHT] player_y_max=a
-		sync3
 			a=flip a^0xff flip=a == {
+				HeroUpdate1
+			}
+			// flip=a == {
+			// 	ApplyGravity
+			// 	MoveJoystick
+			// }
+			// UpdateVertical
+			//handle_camera_movement
+			//handle_player_movement
+		sync2
+			a=flip == {
+				HeroUpdate2
+			} 
+			
+			// a=flip == {
+				// ApplyGravity
+				// MoveJoystick
+				// UpdateVertical
+				// UpdateHorizontal
+			// }
+			// else {
+				// set ptrs to camera movement
+			// 	a=camera_y+1
+			// 	ptr_map_pf0_0=ptr_map_pf1_0=ptr_map_pf2_0=ptr_map_pf0_1=ptr_map_pf1_1=ptr_map_pf2_1=a
+			// 	// sprite positioning
+			// 	a=player_x x=0 SetHorizPos wsync hmove=a
+			// 	a=player_y c- a+[SPRITE_HEIGHT] player_y_max=a
+			// }
+			
+		sync3
+			a=flip == {
 				draw_map_frame
 			}
 			else {
+				// sprite positioning
+				a=player_x x=0 SetHorizPos wsync hmove=a
 				draw_sprites
 			}
+			
 	} always
 }
